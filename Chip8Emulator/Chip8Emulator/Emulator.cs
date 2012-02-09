@@ -105,21 +105,21 @@ namespace Chip8Emulator
         {
             // On récupère l'instruction 16bit sur laquelle pointe PC
             // Pour ca on lit 2 byte 8bit que l'on stock sur 16 bits
-            ushort opcode = (ushort)((memory[programCounter] << 8) + memory[programCounter + 1]);
+            var instruction = (ushort)((memory[programCounter] << 8) + memory[programCounter + 1]);
 
             // Puis on incrémente PC d'autant de blocs que l'on vient de lire, soit 2
             programCounter += 2;
 
             // On extrait les différents paramètres possibles d'une instruction à l'avance
-            ushort _Code = (ushort)(opcode & 0xF000);
-            NNN = (ushort)(opcode & 0x0FFF);
-            KK = (byte)(opcode & 0x00FF);
-            K = (byte)(opcode & 0x000F);
-            X = (byte)((opcode & 0x0F00) >> 8);
-            Y = (byte)((opcode & 0x00F0) >> 4);
+            var opCode = (ushort)(instruction & 0xF000);
+            NNN = (ushort)(instruction & 0x0FFF);
+            KK = (byte)(instruction & 0x00FF);
+            K = (byte)(instruction & 0x000F);
+            X = (byte)((instruction & 0x0F00) >> 8);
+            Y = (byte)((instruction & 0x00F0) >> 4);
 
             // Maintenant on décode l'opcode et on le redirige vers la bonne instruction (dispatcher)
-            switch (_Code)
+            switch (opCode)
             {
                 case 0x0000:
                     switch (KK)

@@ -74,11 +74,11 @@ namespace Chip8Emulator
                         Chip8Timer.Stop();
                         // Puis on le donne à notre émulateur
                         
-                        RenderTimer.Interval = TimeSpan.FromSeconds(1 / 30);
+                        RenderTimer.Interval = TimeSpan.FromSeconds(1 / 5);
                         RenderTimer.Tick += new EventHandler(Render);
                         RenderTimer.Start();
 
-                        Chip8Timer.Interval = TimeSpan.FromSeconds(1 / 30);
+                        Chip8Timer.Interval = TimeSpan.FromSeconds(1 / 2);
                         Chip8Timer.Tick += new EventHandler(CPUCycle);
                         Chip8Timer.Start();
                     }
