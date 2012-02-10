@@ -36,40 +36,45 @@ namespace GameboyEmulator
                 switch ( opcode )
                 {
                     case 0x06: // LD B,n
-                        Registers.B = romData[ Registers.PC ];
-                        Registers.PC++;
+                        Registers.B = GetByteAtProgramCounter();
+                        cycleCount += 8;
+                        break;
+                    case 0x0A: // LD A,(BC)
+                        Registers.A = romData[Registers.BC];
                         cycleCount += 8;
                         break;
                     case 0x0E: // LD C,n
-                        Registers.C = romData[ Registers.PC ];
-                        Registers.PC++;
+                        Registers.C = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
                     case 0x16: // LD D,n
-                        Registers.D = romData[Registers.PC];
-                        Registers.PC++;
+                        Registers.D = GetByteAtProgramCounter();
+                        cycleCount += 8;
+                        break;
+                    case 0x1A: // LD A,(DE)
+                        Registers.A = romData[Registers.DE];
                         cycleCount += 8;
                         break;
                     case 0x1E: // LD E,n
-                        Registers.E = romData[Registers.PC];
-                        Registers.PC++;
+                        Registers.E = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
                     case 0x26: // LD H,n
-                        Registers.H = romData[Registers.PC];
-                        Registers.PC++;
+                        Registers.H = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
                     case 0x2E: // LD L,n
-                        Registers.L = romData[Registers.PC];
-                        Registers.PC++;
+                        Registers.L = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
                     case 0x36: // LD (HL),n
                         // TODO Not sure of this statement
-                        romData[Registers.HL] = romData[Registers.PC];
-                        Registers.PC++;
+                        romData[Registers.HL] = GetByteAtProgramCounter();
                         cycleCount += 12;
+                        break;
+                    case 0x3E: // LD A,#
+                        Registers.A = GetByteAtProgramCounter();
+                        cycleCount += 8;
                         break;
                     case 0x40: // LD B,B
                         Registers.B = Registers.B;
@@ -295,9 +300,26 @@ namespace GameboyEmulator
                         Registers.A = Registers.A;
                         cycleCount += 4;
                         break;
+                    case 0xFA: // LD A,(NN)
+                        Registers.A = romData[ GetUShortAtProgramCounter() ];
+                        cycleCount += 16;
+                        break;
                 }
 
             } while ( cycleCount <= 70224 );
+        }
+
+        private byte GetByteAtProgramCounter()
+        {
+            return romData[Registers.PC++];
+        }
+
+        private ushort GetUShortAtProgramCounter()
+        {
+            var lowOrder = romData[Registers.PC++];
+            var highOrder = romData[Registers.PC++];
+
+            return (ushort)((highOrder << 8) | lowOrder);
         }
         
         public CPURegisters Registers { get; set; }
