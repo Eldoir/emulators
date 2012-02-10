@@ -75,6 +75,10 @@ namespace GameboyEmulator
                         Registers.L = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
+                    case 0x32: // LD (HLD),A / LD (HL-),A / LDD (HL),A
+                        romData[Registers.HL--] = Registers.A;
+                        cycleCount += 8;
+                        break;
                     case 0x36: // LD (HL),n
                         // TODO Not sure of this statement
                         romData[Registers.HL] = GetByteAtProgramCounter();
