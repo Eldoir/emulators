@@ -1,10 +1,14 @@
 
 Chip8Emulator/Chip8Emulator/bin/
 Chip8Emulator/Chip8Emulator/obj/
+<<<<<<< HEAD
 Chip8Emulator/_ReSharper.Chip8Emulator/
 Chip8Emulator/Chip8Emulator.1.2.dotCover
 Chip8Emulator/Chip8Emulator.6.5.TeamCity.user
+Chip8Emulator/Chip8Emulator.sln.docstates.suo
+Chip8Emulator/Chip8Emulator.sln.docstates.suo
 *.suo
+=======
 GameboyEmulator/GameboyEmulator/GameboyEmulator/obj/
 GameboyEmulator/GameboyEmulator/GameboyEmulator/bin/
-GameboyEmulator/GameboyEmulator/_ReSharper.*
+>>>>>>> 69aa49a80ace3dff3f87b5d74ade89e0602308aa
