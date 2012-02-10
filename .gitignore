@@ -8,3 +8,4 @@ Chip8Emulator/Chip8Emulator.6.5.TeamCity.user
 GameboyEmulator/GameboyEmulator/GameboyEmulator/obj/
 GameboyEmulator/GameboyEmulator/GameboyEmulator/bin/
 GameboyEmulator/GameboyEmulator/_ReSharper.*
+*.suo
