@@ -336,6 +336,10 @@ namespace GameboyEmulator
                         Registers.A = Registers.A;
                         cycleCount += 4;
                         break;
+                    case 0xE2: // LD (C),A
+                        romData[0xFF00 + Registers.C] = Registers.A;
+                        cycleCount += 8;
+                        break;
                     case 0xEA: // LD (NN),A
                         romData[GetUShortAtProgramCounter()] = Registers.A;
                         cycleCount += 16;
