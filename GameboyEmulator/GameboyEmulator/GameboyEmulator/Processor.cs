@@ -472,6 +472,119 @@ namespace GameboyEmulator
 							cycleCount += 4;
 						}
 						break;
+					case 0x88: // ADC A,B
+						{
+							var temp = (byte)(Registers.A + Registers.B + Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = false;
+							Registers.HFlag = HasHalfCarry(Registers.A, Registers.B, Registers.C);
+							Registers.CFlag = HasCarry(temp);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x89: // ADC A,C
+						{
+							var temp = (byte)(Registers.A + Registers.C + Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = false;
+							Registers.HFlag = HasHalfCarry(Registers.A, Registers.C, Registers.C);
+							Registers.CFlag = HasCarry(temp);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x8A: // ADC A,D
+						{
+							var temp = (byte)(Registers.A + Registers.D + Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = false;
+							Registers.HFlag = HasHalfCarry(Registers.A, Registers.D, Registers.C);
+							Registers.CFlag = HasCarry(temp);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x8B: // ADC A,E
+						{
+							var temp = (byte)(Registers.A + Registers.E + Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = false;
+							Registers.HFlag = HasHalfCarry(Registers.A, Registers.E, Registers.C);
+							Registers.CFlag = HasCarry(temp);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x8C: // ADC A,H
+						{
+							var temp = (byte)(Registers.A + Registers.H + Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = false;
+							Registers.HFlag = HasHalfCarry(Registers.A, Registers.H, Registers.C);
+							Registers.CFlag = HasCarry(temp);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x8D: // ADC A,L
+						{
+							var temp = (byte)(Registers.A + Registers.L + Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = false;
+							Registers.HFlag = HasHalfCarry(Registers.A, Registers.L, Registers.C);
+							Registers.CFlag = HasCarry(temp);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x8E: // ADC A,(HL)
+						{
+							var regValue = romData[ Registers.HL ];
+							var temp = (byte)(Registers.A + regValue + Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = false;
+							Registers.HFlag = HasHalfCarry(Registers.A, regValue, Registers.C);
+							Registers.CFlag = HasCarry(temp);
+
+							Registers.A = temp;
+
+							cycleCount += 8;
+						}
+						break;
+					case 0x8F: // ADC A,A
+						{
+							var temp = (byte)(Registers.A + Registers.A + Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = false;
+							Registers.HFlag = HasHalfCarry( Registers.A, Registers.A, Registers.C );
+							Registers.CFlag = HasCarry( temp );
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
 					case 0xC1: // POP BC
 						Registers.B = romData[ Registers.SP++ ];
 						Registers.C = romData[ Registers.SP++ ];
@@ -491,6 +604,21 @@ namespace GameboyEmulator
 							Registers.NFlag = false;
 							Registers.HFlag = HasHalfCarry(Registers.A, regValue);
 							Registers.CFlag = HasCarry(Registers.A, regValue);
+
+							Registers.A = temp;
+
+							cycleCount += 8;
+						}
+						break;
+					case 0xCE: // ADC A,#
+						{
+							var regValue = GetByteAtProgramCounter();
+							var temp = (byte)(Registers.A + regValue + Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = false;
+							Registers.HFlag = HasHalfCarry(Registers.A, regValue, Registers.C);
+							Registers.CFlag = HasCarry(temp);
 
 							Registers.A = temp;
 
@@ -602,9 +730,19 @@ namespace GameboyEmulator
 			return ( first & 0xFF ) + ( second & 0xFF ) > 0xFF;
 		}
 
+		private bool HasCarry( ushort value )
+		{
+			return (value & 0xFF) > 0xFF;
+		}
+
 		private bool HasHalfCarry( ushort first, ushort second )
 		{
 			return ( first & 0x0F ) + ( second & 0x0F ) > 0x0F;
+		}
+
+		private bool HasHalfCarry(ushort first, ushort second, byte third)
+		{
+			return (first & 0x0F) + (second & 0x0F) + third > 0x0F;
 		}
 
 		private void WriteUShortAtProgramCounter( ushort value )
