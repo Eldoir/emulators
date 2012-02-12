@@ -34,6 +34,10 @@ namespace GameboyEmulator
 						Registers.B = GetByteAtProgramCounter();
 						cycleCount += 8;
 						break;
+					case 0x08: // LD (nn), SP
+						WriteUShortAtProgramCounter( Registers.SP );
+						cycleCount += 20;
+						break;
 					case 0x0A: // LD A,(BC)
 						Registers.A = romData[ Registers.BC ];
 						cycleCount += 8;
@@ -399,16 +403,6 @@ namespace GameboyEmulator
 			} while ( cycleCount <= 70224 );
 		}
 
-		private bool HasCarry( ushort first, ushort second)
-		{
-			return (first & 0xFF) + (second & 0xFF) > 0xFF;
-		}
-
-		private bool HasHalfCarry( ushort first, ushort second )
-		{
-			return (first & 0x0F) + (second & 0x0F) > 0x0F;
-		}
-
 		public void LoadROM( byte[] romData )
 		{
 			this.romData = new byte[romData.Length];
@@ -435,14 +429,20 @@ namespace GameboyEmulator
 			return ( ushort ) ( ( highOrder << 8 ) | lowOrder );
 		}
 
-		private bool HasHalfCarry( )
+		private void WriteUShortAtProgramCounter( ushort value )
 		{
-			
+			romData[ Registers.PC++ ] = ( byte ) ( value );
+			romData[ Registers.PC++ ] = ( byte ) ( value >> 8 );
 		}
 
-		private bool HasCarry()
+		private bool HasCarry(ushort first, ushort second)
 		{
-			
+			return (first & 0xFF) + (second & 0xFF) > 0xFF;
+		}
+
+		private bool HasHalfCarry(ushort first, ushort second)
+		{
+			return (first & 0x0F) + (second & 0x0F) > 0x0F;
 		}
 
 		private const int frameDuration = 70224;
