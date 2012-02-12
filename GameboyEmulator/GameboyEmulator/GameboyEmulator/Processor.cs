@@ -359,10 +359,20 @@ namespace GameboyEmulator
 						Registers.A = Registers.A;
 						cycleCount += 4;
 						break;
+					case 0xC1: // POP BC
+						Registers.B = romData[Registers.SP++];
+						Registers.C = romData[Registers.SP++];
+						cycleCount += 12;
+						break;
 					case 0xC5: // PUSH BC
 						romData[--Registers.SP] = Registers.B;
 						romData[--Registers.SP] = Registers.C;
 						cycleCount += 16;
+						break;
+					case 0xD1: // POP DE
+						Registers.D = romData[Registers.SP++];
+						Registers.E = romData[Registers.SP++];
+						cycleCount += 12;
 						break;
 					case 0xD5: // PUSH DE
 						romData[--Registers.SP] = Registers.D;
@@ -371,6 +381,11 @@ namespace GameboyEmulator
 						break;
 					case 0xE0: // LDH (n),A
 						romData[ 0xFF00 + GetByteAtProgramCounter() ] = Registers.A;
+						cycleCount += 12;
+						break;
+					case 0xE1: // POP HL
+						Registers.H = romData[Registers.SP++];
+						Registers.L = romData[Registers.SP++];
 						cycleCount += 12;
 						break;
 					case 0xE2: // LD (C),A
@@ -388,6 +403,11 @@ namespace GameboyEmulator
 						break;
 					case 0xF0: // LDH A,(n)
 						Registers.A = romData[ 0xFF00 + GetByteAtProgramCounter() ];
+						cycleCount += 12;
+						break;
+					case 0xF1: // POP AF
+						Registers.A = romData[ Registers.SP++ ];
+						Registers.F = romData[ Registers.SP++ ];
 						cycleCount += 12;
 						break;
 					case 0xF2: // LD A,(C)
