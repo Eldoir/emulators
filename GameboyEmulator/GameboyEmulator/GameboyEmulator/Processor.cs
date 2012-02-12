@@ -585,6 +585,119 @@ namespace GameboyEmulator
 							cycleCount += 4;
 						}
 						break;
+					case 0x90: // SUB A,B
+						{
+							var temp = (byte)(Registers.A - Registers.B);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = true;
+							Registers.HFlag = !HasHalfBorrow(Registers.A, Registers.B);
+							Registers.CFlag = !HasBorrow(Registers.A, Registers.B);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x91: // SUB A,C
+						{
+							var temp = (byte)(Registers.A - Registers.C);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = true;
+							Registers.HFlag = !HasHalfBorrow(Registers.A, Registers.C);
+							Registers.CFlag = !HasBorrow(Registers.A, Registers.C);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x92: // SUB A,D
+						{
+							var temp = (byte)(Registers.A - Registers.D);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = true;
+							Registers.HFlag = !HasHalfBorrow(Registers.A, Registers.D);
+							Registers.CFlag = !HasBorrow(Registers.A, Registers.D);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x93: // SUB A,E
+						{
+							var temp = (byte)(Registers.A - Registers.E);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = true;
+							Registers.HFlag = !HasHalfBorrow(Registers.A, Registers.E);
+							Registers.CFlag = !HasBorrow(Registers.A, Registers.E);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x94: // SUB A,H
+						{
+							var temp = (byte)(Registers.A - Registers.H);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = true;
+							Registers.HFlag = !HasHalfBorrow(Registers.A, Registers.H);
+							Registers.CFlag = !HasBorrow(Registers.A, Registers.H);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x95: // SUB A,L
+						{
+							var temp = (byte)(Registers.A - Registers.L);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = true;
+							Registers.HFlag = !HasHalfBorrow(Registers.A, Registers.L);
+							Registers.CFlag = !HasBorrow(Registers.A, Registers.L);
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
+					case 0x96: // SUB A,(HL)
+						{
+							var regValue = romData[ Registers.HL ];
+							var temp = (byte)(Registers.A - regValue);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = true;
+							Registers.HFlag = !HasHalfBorrow(Registers.A, regValue);
+							Registers.CFlag = !HasBorrow(Registers.A, regValue);
+
+							Registers.A = temp;
+
+							cycleCount += 8;
+						}
+						break;
+					case 0x97: // SUB A,A
+						{
+							var temp = ( byte ) ( Registers.A - Registers.A );
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = true;
+							Registers.HFlag = !HasHalfBorrow(Registers.A, Registers.A );
+							Registers.CFlag = !HasBorrow( Registers.A, Registers.A );
+
+							Registers.A = temp;
+
+							cycleCount += 4;
+						}
+						break;
 					case 0xC1: // POP BC
 						Registers.B = romData[ Registers.SP++ ];
 						Registers.C = romData[ Registers.SP++ ];
@@ -634,6 +747,21 @@ namespace GameboyEmulator
 						romData[ --Registers.SP ] = Registers.D;
 						romData[ --Registers.SP ] = Registers.E;
 						cycleCount += 16;
+						break;
+					case 0xD6: // SUB A,#
+						{
+							var regValue = GetByteAtProgramCounter();
+							var temp = (byte)(Registers.A - regValue);
+
+							Registers.ZFlag = temp == 0;
+							Registers.NFlag = true;
+							Registers.HFlag = !HasHalfBorrow(Registers.A, regValue);
+							Registers.CFlag = !HasBorrow(Registers.A, regValue);
+
+							Registers.A = temp;
+
+							cycleCount += 8;
+						}
 						break;
 					case 0xE0: // LDH (n),A
 						romData[ 0xFF00 + GetByteAtProgramCounter() ] = Registers.A;
@@ -743,6 +871,16 @@ namespace GameboyEmulator
 		private bool HasHalfCarry(ushort first, ushort second, byte third)
 		{
 			return (first & 0x0F) + (second & 0x0F) + third > 0x0F;
+		}
+
+		private bool HasHalfBorrow( ushort first, ushort second )
+		{
+			return ( first & 0x0F ) < ( second & 0x0f );
+		}
+
+		private bool HasBorrow( ushort first, ushort second )
+		{
+			return first < second;
 		}
 
 		private void WriteUShortAtProgramCounter( ushort value )
