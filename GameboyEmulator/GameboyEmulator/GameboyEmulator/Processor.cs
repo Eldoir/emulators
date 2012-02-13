@@ -898,6 +898,86 @@ namespace GameboyEmulator
 
                         cycleCount += 4;
                         break;
+                    case 0xA8: // XOR B
+                        Registers.A = (byte)(Registers.A ^ Registers.B);
+
+                        Registers.ZFlag = Registers.A == 0;
+                        Registers.NFlag = false;
+                        Registers.HFlag = false;
+                        Registers.CFlag = false;
+
+                        cycleCount += 4;
+                        break;
+                    case 0xA9: // XOR C
+                        Registers.A = (byte)(Registers.A ^ Registers.C);
+
+                        Registers.ZFlag = Registers.A == 0;
+                        Registers.NFlag = false;
+                        Registers.HFlag = false;
+                        Registers.CFlag = false;
+
+                        cycleCount += 4;
+                        break;
+                    case 0xAA: // XOR D
+                        Registers.A = (byte)(Registers.A ^ Registers.D);
+
+                        Registers.ZFlag = Registers.A == 0;
+                        Registers.NFlag = false;
+                        Registers.HFlag = false;
+                        Registers.CFlag = false;
+
+                        cycleCount += 4;
+                        break;
+                    case 0xAB: // XOR E
+                        Registers.A = (byte)(Registers.A ^ Registers.E);
+
+                        Registers.ZFlag = Registers.A == 0;
+                        Registers.NFlag = false;
+                        Registers.HFlag = false;
+                        Registers.CFlag = false;
+
+                        cycleCount += 4;
+                        break;
+                    case 0xAC: // XOR H
+                        Registers.A = (byte)(Registers.A ^ Registers.H);
+
+                        Registers.ZFlag = Registers.A == 0;
+                        Registers.NFlag = false;
+                        Registers.HFlag = false;
+                        Registers.CFlag = false;
+
+                        cycleCount += 4;
+                        break;
+                    case 0xAD: // XOR L
+                        Registers.A = (byte)(Registers.A ^ Registers.L);
+
+                        Registers.ZFlag = Registers.A == 0;
+                        Registers.NFlag = false;
+                        Registers.HFlag = false;
+                        Registers.CFlag = false;
+
+                        cycleCount += 4;
+                        break;
+                    case 0xAE: // XOR (HL)
+                        Registers.A = (byte)(Registers.A ^ romData[ Registers.HL ]);
+
+                        Registers.ZFlag = Registers.A == 0;
+                        Registers.NFlag = false;
+                        Registers.HFlag = false;
+                        Registers.CFlag = false;
+
+                        cycleCount += 4;
+                        break;
+                    case 0xAF: // XOR A
+                        Registers.A = (byte)(Registers.A ^ Registers.A);
+
+                        Registers.ZFlag = Registers.A == 0;
+                        Registers.NFlag = false;
+                        Registers.HFlag = false;
+                        Registers.CFlag = false;
+
+                        cycleCount += 4;
+                        break;
                     case 0xB0: // OR A,B
                         Registers.A = (byte)(Registers.B | Registers.A);
 
@@ -1074,6 +1154,16 @@ namespace GameboyEmulator
                     case 0xEA: // LD (NN),A
                         romData[ GetUShortAtProgramCounter() ] = Registers.A;
                         cycleCount += 16;
+                        break;
+                    case 0xEE: // XOR #
+                        Registers.A = (byte)(Registers.A ^ GetByteAtProgramCounter());
+
+                        Registers.ZFlag = Registers.A == 0;
+                        Registers.NFlag = false;
+                        Registers.HFlag = false;
+                        Registers.CFlag = false;
+
+                        cycleCount += 4;
                         break;
                     case 0xF0: // LDH A,(n)
                         Registers.A = romData[ 0xFF00 + GetByteAtProgramCounter() ];
