@@ -9,3 +9,5 @@ GameboyEmulator/GameboyEmulator/GameboyEmulator/obj/
 GameboyEmulator/GameboyEmulator/GameboyEmulator/bin/
 GameboyEmulator/GameboyEmulator/_ReSharper.*
 *.suo
+GameboyEmulator/GameboyEmulator/GameboyEmulator.suo
+*.suo
