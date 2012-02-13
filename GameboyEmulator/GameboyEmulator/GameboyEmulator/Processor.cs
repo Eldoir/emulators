@@ -700,7 +700,7 @@ namespace GameboyEmulator
                         break;
                     case 0x98: // SBC A,B
                         {
-                            var toSubstract = Registers.B + Registers.C;
+                            var toSubstract = (byte)(Registers.B + Registers.C);
                             var temp = (byte)(Registers.A - toSubstract);
 
                             Registers.ZFlag = temp == 0;
@@ -715,7 +715,7 @@ namespace GameboyEmulator
                         break;
                     case 0x99: // SBC A,C
                         {
-                            var toSubstract = Registers.C + Registers.C;
+                            var toSubstract = (byte)(Registers.C + Registers.C);
                             var temp = (byte)(Registers.A - toSubstract);
 
                             Registers.ZFlag = temp == 0;
@@ -730,7 +730,7 @@ namespace GameboyEmulator
                         break;
                     case 0x9A: // SBC A,D
                         {
-                            var toSubstract = Registers.D + Registers.C;
+                            var toSubstract = (byte)(Registers.D + Registers.C);
                             var temp = (byte)(Registers.A - toSubstract);
 
                             Registers.ZFlag = temp == 0;
@@ -745,7 +745,7 @@ namespace GameboyEmulator
                         break;
                     case 0x9B: // SBC A,E
                         {
-                            var toSubstract = Registers.E + Registers.C;
+                            var toSubstract = (byte)(Registers.E + Registers.C);
                             var temp = (byte)(Registers.A - toSubstract);
 
                             Registers.ZFlag = temp == 0;
@@ -760,7 +760,7 @@ namespace GameboyEmulator
                         break;
                     case 0x9C: // SBC A,H
                         {
-                            var toSubstract = Registers.H + Registers.C;
+                            var toSubstract = (byte)(Registers.H + Registers.C);
                             var temp = (byte)(Registers.A - toSubstract);
 
                             Registers.ZFlag = temp == 0;
@@ -775,7 +775,7 @@ namespace GameboyEmulator
                         break;
                     case 0x9D: // SBC A,L
                         {
-                            var toSubstract = Registers.L + Registers.C;
+                            var toSubstract = (byte)(Registers.L + Registers.C);
                             var temp = (byte)(Registers.A - toSubstract);
 
                             Registers.ZFlag = temp == 0;
@@ -790,7 +790,7 @@ namespace GameboyEmulator
                         break;
                     case 0x9E: // SBC A,(HL)
                         {
-                            var toSubstract = romData[Registers.HL] - Registers.C;
+                            var toSubstract = (byte)(romData[Registers.HL] - Registers.C);
                             var temp = (byte)(Registers.A - toSubstract);
 
                             Registers.ZFlag = temp == 0;
@@ -805,7 +805,7 @@ namespace GameboyEmulator
                         break;
                     case 0x9F: // SBC A,A
                         {
-                            var toSubstract = Registers.A + Registers.C;
+                            var toSubstract = (byte)(Registers.A + Registers.C);
                             var temp = (byte)(Registers.A - toSubstract );
 
                             Registers.ZFlag = temp == 0;
@@ -819,7 +819,7 @@ namespace GameboyEmulator
                         }
                         break;
                     case 0xA0: // AND A,B
-                        Registers.A = Registers.B & Registers.A;
+                        Registers.A = (byte)(Registers.B & Registers.A);
 
                         Registers.ZFlag = Registers.A == 0;
                         Registers.NFlag = false;
@@ -829,7 +829,7 @@ namespace GameboyEmulator
                         cycleCount += 4;
                         break;
                     case 0xA1: // AND A,C
-                        Registers.A = Registers.C & Registers.A;
+                        Registers.A = (byte)(Registers.C & Registers.A);
 
                         Registers.ZFlag = Registers.A == 0;
                         Registers.NFlag = false;
@@ -839,7 +839,7 @@ namespace GameboyEmulator
                         cycleCount += 4;
                         break;
                     case 0xA2: // AND A,D
-                        Registers.A = Registers.D & Registers.A;
+                        Registers.A = (byte)(Registers.D & Registers.A);
 
                         Registers.ZFlag = Registers.A == 0;
                         Registers.NFlag = false;
@@ -849,7 +849,7 @@ namespace GameboyEmulator
                         cycleCount += 4;
                         break;
                     case 0xA3: // AND A,E
-                        Registers.A = Registers.E & Registers.A;
+                        Registers.A = (byte)(Registers.E & Registers.A);
 
                         Registers.ZFlag = Registers.A == 0;
                         Registers.NFlag = false;
@@ -859,7 +859,7 @@ namespace GameboyEmulator
                         cycleCount += 4;
                         break;
                     case 0xA4: // AND A,H
-                        Registers.A = Registers.H & Registers.A;
+                        Registers.A = (byte)(Registers.H & Registers.A);
 
                         Registers.ZFlag = Registers.A == 0;
                         Registers.NFlag = false;
@@ -869,7 +869,7 @@ namespace GameboyEmulator
                         cycleCount += 4;
                         break;
                     case 0xA5: // AND A,L
-                        Registers.A = Registers.L & Registers.A;
+                        Registers.A = (byte)(Registers.L & Registers.A);
 
                         Registers.ZFlag = Registers.A == 0;
                         Registers.NFlag = false;
@@ -879,7 +879,7 @@ namespace GameboyEmulator
                         cycleCount += 4;
                         break;
                     case 0xA6: // AND A,(HL)
-                        Registers.A = romData[ Registers.HL ] & Registers.A;
+                        Registers.A = (byte)(romData[ Registers.HL ] & Registers.A);
 
                         Registers.ZFlag = Registers.A == 0;
                         Registers.NFlag = false;
@@ -889,7 +889,7 @@ namespace GameboyEmulator
                         cycleCount += 8;
                         break;
                     case 0xA7: // AND A,A
-                        Registers.A = Registers.A & Registers.A;
+                        Registers.A = (byte)(Registers.A & Registers.A);
 
                         Registers.ZFlag = Registers.A == 0;
                         Registers.NFlag = false;
@@ -982,7 +982,7 @@ namespace GameboyEmulator
                         cycleCount += 16;
                         break;
                     case 0xE6: // AND A,#
-                        Registers.A = GetByteAtProgramCounter() & Registers.A;
+                        Registers.A = (byte)(GetByteAtProgramCounter() & Registers.A);
 
                         Registers.ZFlag = Registers.A == 0;
                         Registers.NFlag = false;
