@@ -36,7 +36,19 @@ namespace GameboyEmulator
 
                             Registers.ZFlag = newValue == 0;
                             Registers.NFlag = false;
-                            Registers.H = HasHalfCarry(Registers.B, 1);
+                            Registers.HFlag = HasHalfCarry(Registers.B, 1);
+
+                            Registers.B = newValue;
+                            cycleCount += 4;
+                        }
+                        break;
+                    case 0x05: // DEC B
+                        {
+                            var newValue = Registers.B - 1;
+
+                            Registers.ZFlag = newValue;
+                            Registers.NFlag = false;
+                            Registers.H = HasHalfCarry(regValue, 1);
 
                             Registers.B = newValue;
                             cycleCount += 4;
@@ -66,6 +78,18 @@ namespace GameboyEmulator
                             cycleCount += 4;
                         }
                         break;
+                    case 0x0D: // DEC C
+                        {
+                            var newValue = Registers.C - 1;
+
+                            Registers.ZFlag = newValue;
+                            Registers.NFlag = false;
+                            Registers.H = HasHalfCarry(regValue, 1);
+
+                            Registers.C = newValue;
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x0E: // LD C,n
                         Registers.C = GetByteAtProgramCounter();
                         cycleCount += 8;
@@ -90,6 +114,18 @@ namespace GameboyEmulator
                             cycleCount += 4;
                         }
                         break;
+                    case 0x15: // DEC D
+                        {
+                            var newValue = Registers.D - 1;
+
+                            Registers.ZFlag = newValue;
+                            Registers.NFlag = false;
+                            Registers.H = HasHalfCarry(regValue, 1);
+
+                            Registers.D = newValue;
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x16: // LD D,n
                         Registers.D = GetByteAtProgramCounter();
                         cycleCount += 8;
@@ -105,6 +141,18 @@ namespace GameboyEmulator
                             Registers.ZFlag = newValue;
                             Registers.NFlag = false;
                             Registers.H = HasHalfCarry(Registers.E, 1);
+
+                            Registers.E = newValue;
+                            cycleCount += 4;
+                        }
+                        break;
+                    case 0x1D: // DEC E
+                        {
+                            var newValue = Registers.E - 1;
+
+                            Registers.ZFlag = newValue;
+                            Registers.NFlag = false;
+                            Registers.H = HasHalfCarry(regValue, 1);
 
                             Registers.E = newValue;
                             cycleCount += 4;
@@ -134,6 +182,18 @@ namespace GameboyEmulator
                             cycleCount += 4;
                         }
                         break;
+                    case 0x25: // DEC H
+                        {
+                            var newValue = Registers.H - 1;
+
+                            Registers.ZFlag = newValue;
+                            Registers.NFlag = false;
+                            Registers.H = HasHalfCarry(regValue, 1);
+
+                            Registers.H = newValue;
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x26: // LD H,n
                         Registers.H = GetByteAtProgramCounter();
                         cycleCount += 8;
@@ -154,6 +214,18 @@ namespace GameboyEmulator
                             cycleCount += 4;
                         }
                         break;
+                    case 0x2D: // DEC L
+                        {
+                            var newValue = Registers.L - 1;
+
+                            Registers.ZFlag = newValue;
+                            Registers.NFlag = false;
+                            Registers.H = HasHalfCarry(regValue, 1);
+
+                            Registers.L = newValue;
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x2E: // LD L,n
                         Registers.L = GetByteAtProgramCounter();
                         cycleCount += 8;
@@ -166,6 +238,19 @@ namespace GameboyEmulator
                         romData[Registers.HL--] = Registers.A;
                         cycleCount += 8;
                         break;
+                    case 0x35: // DEC (HL)
+                        {
+                            var regValue = romData[Registers.HL];
+                            var newValue = regValue - 1;
+
+                            Registers.ZFlag = newValue;
+                            Registers.NFlag = false;
+                            Registers.H = HasHalfCarry(regValue, 1);
+
+                            romData[Registers.HL] = newValue;
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x3C: // INC (HL)
                         {
                             var regValue = romData[Registers.HL];
@@ -176,6 +261,18 @@ namespace GameboyEmulator
                             Registers.H = HasHalfCarry( regValue, 1 );
 
                             romData[Registers.HL] = newValue;
+                            cycleCount += 4;
+                        }
+                        break;
+                    case 0x3D: // DEC A
+                        {
+                            var newValue = Registers.A - 1;
+
+                            Registers.ZFlag = newValue;
+                            Registers.NFlag = false;
+                            Registers.H = HasHalfCarry(regValue, 1);
+
+                            Registers.A = newValue;
                             cycleCount += 4;
                         }
                         break;
