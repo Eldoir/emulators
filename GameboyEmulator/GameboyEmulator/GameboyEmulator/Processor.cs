@@ -64,6 +64,15 @@ namespace GameboyEmulator
                         WriteUShortAtProgramCounter(Registers.SP);
                         cycleCount += 20;
                         break;
+                    case 0x09: // ADD HL,BC
+                        {
+                            Registers.NFlag = false;
+                            Registers.CFlag = ((Registers.HL + Registers.BC) & 0xFFFF) > 0xFFFF;
+                            Registers.HFlag = (Registers.HL & 0x0FFF) + (Registers.BC & 0x0FFF) > 0x0FFF;
+
+                            Registers.HL += Registers.BC;
+                        }
+                        break;
                     case 0x0A: // LD A,(BC)
                         Registers.A = romData[Registers.BC];
                         cycleCount += 8;
@@ -136,6 +145,15 @@ namespace GameboyEmulator
                         Registers.D = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
+                    case 0x19: // ADD HL,DE
+                        {
+                            Registers.NFlag = false;
+                            Registers.CFlag = ((Registers.HL + Registers.DE) & 0xFFFF) > 0xFFFF;
+                            Registers.HFlag = (Registers.HL & 0x0FFF) + (Registers.DE & 0x0FFF) > 0x0FFF;
+
+                            Registers.HL += Registers.DE;
+                        }
+                        break;
                     case 0x1A: // LD A,(DE)
                         Registers.A = romData[Registers.DE];
                         cycleCount += 8;
@@ -207,6 +225,15 @@ namespace GameboyEmulator
                     case 0x26: // LD H,n
                         Registers.H = GetByteAtProgramCounter();
                         cycleCount += 8;
+                        break;
+                    case 0x29: // ADD HL,HL
+                        {
+                            Registers.NFlag = false;
+                            Registers.CFlag = ((Registers.HL + Registers.HL) & 0xFFFF) > 0xFFFF;
+                            Registers.HFlag = (Registers.HL & 0x0FFF) + (Registers.HL & 0x0FFF) > 0x0FFF;
+
+                            Registers.HL <<= 1;
+                        }
                         break;
                     case 0x2A: // LD A,(HLI) / LD A,(HL+) / LDI A,(HL)
                         Registers.A = romData[Registers.HL++];
@@ -282,6 +309,15 @@ namespace GameboyEmulator
                         // TODO Not sure of this statement
                         romData[Registers.HL] = GetByteAtProgramCounter();
                         cycleCount += 12;
+                        break;
+                    case 0x39: // ADD HL,SP
+                        {
+                            Registers.NFlag = false;
+                            Registers.CFlag = ((Registers.HL + Registers.SP) & 0xFFFF) > 0xFFFF;
+                            Registers.HFlag = (Registers.HL & 0x0FFF) + (Registers.SP & 0x0FFF) > 0x0FFF;
+
+                            Registers.HL += Registers.SP;
+                        }
                         break;
                     case 0x3A: // LD A,(HLD) / LD A,(HL-) / LDD A,(HL)
                         Registers.A = romData[Registers.HL--];
