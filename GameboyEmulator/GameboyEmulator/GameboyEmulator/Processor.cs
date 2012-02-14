@@ -1488,9 +1488,16 @@ namespace GameboyEmulator
                         break;
                     case 0xE8: // ADD SP,n
                         {
+                            var value = GetByteAtProgramCounter();
+
+                            Registers.ZFlag = false;
+                            Registers.NFlag = false;
+                            Registers.CFlag = HasCarry(Registers.SP, value);
+                            Registers.HFlag = HasHalfCarry(Registers.SP, value);
                             
+                            Registers.SP += value;
                             
-                            cycleCount += 16;
+                            cycleCount += 16; // TODO: check if this should be 8 instead
                         }
                         break;
                     case 0xEA: // LD (NN),A
