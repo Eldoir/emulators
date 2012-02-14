@@ -32,7 +32,7 @@ namespace GameboyEmulator
                         break;
                     case 0x04: // INC B
                         {
-                            var newValue = (byte)(Registers.B + 1 );
+                            var newValue = (byte)(Registers.B + 1);
 
                             Registers.B = newValue;
 
@@ -71,6 +71,8 @@ namespace GameboyEmulator
                             Registers.HFlag = (Registers.HL & 0x0FFF) + (Registers.BC & 0x0FFF) > 0x0FFF;
 
                             Registers.HL += Registers.BC;
+
+                            cycleCount += 8;
                         }
                         break;
                     case 0x0A: // LD A,(BC)
@@ -79,7 +81,7 @@ namespace GameboyEmulator
                         break;
                     case 0x0C: // INC C
                         {
-                            var newValue = (byte)(Registers.C + 1 );
+                            var newValue = (byte)(Registers.C + 1);
 
                             Registers.C = newValue;
 
@@ -117,7 +119,7 @@ namespace GameboyEmulator
                         break;
                     case 0x14: // INC D
                         {
-                            var newValue = (byte)(Registers.D + 1 );
+                            var newValue = (byte)(Registers.D + 1);
 
                             Registers.D = newValue;
 
@@ -152,6 +154,8 @@ namespace GameboyEmulator
                             Registers.HFlag = (Registers.HL & 0x0FFF) + (Registers.DE & 0x0FFF) > 0x0FFF;
 
                             Registers.HL += Registers.DE;
+
+                            cycleCount += 8;
                         }
                         break;
                     case 0x1A: // LD A,(DE)
@@ -160,7 +164,7 @@ namespace GameboyEmulator
                         break;
                     case 0x1C: // INC E
                         {
-                            var newValue = (byte)(Registers.E + 1 );
+                            var newValue = (byte)(Registers.E + 1);
 
                             Registers.E = newValue;
 
@@ -198,7 +202,7 @@ namespace GameboyEmulator
                         break;
                     case 0x24: // INC H
                         {
-                            var newValue = (byte)(Registers.H + 1 );
+                            var newValue = (byte)(Registers.H + 1);
 
                             Registers.H = newValue;
 
@@ -233,6 +237,8 @@ namespace GameboyEmulator
                             Registers.HFlag = (Registers.HL & 0x0FFF) + (Registers.HL & 0x0FFF) > 0x0FFF;
 
                             Registers.HL <<= 1;
+
+                            cycleCount += 8;
                         }
                         break;
                     case 0x2A: // LD A,(HLI) / LD A,(HL+) / LDI A,(HL)
@@ -241,7 +247,7 @@ namespace GameboyEmulator
                         break;
                     case 0x2C: // INC L
                         {
-                            var newValue = (byte)(Registers.L + 1 );
+                            var newValue = (byte)(Registers.L + 1);
 
                             Registers.L = newValue;
 
@@ -317,6 +323,8 @@ namespace GameboyEmulator
                             Registers.HFlag = (Registers.HL & 0x0FFF) + (Registers.SP & 0x0FFF) > 0x0FFF;
 
                             Registers.HL += Registers.SP;
+
+                            cycleCount += 8;
                         }
                         break;
                     case 0x3A: // LD A,(HLD) / LD A,(HL-) / LDD A,(HL)
@@ -325,7 +333,7 @@ namespace GameboyEmulator
                         break;
                     case 0x3C: // INC A
                         {
-                            var newValue = (byte)(Registers.A + 1 );
+                            var newValue = (byte)(Registers.A + 1);
 
                             Registers.ZFlag = newValue == 0;
                             Registers.NFlag = false;
@@ -1477,6 +1485,13 @@ namespace GameboyEmulator
                         Registers.CFlag = false;
 
                         cycleCount += 8;
+                        break;
+                    case 0xE8: // ADD SP,n
+                        {
+                            
+                            
+                            cycleCount += 16;
+                        }
                         break;
                     case 0xEA: // LD (NN),A
                         romData[GetUShortAtProgramCounter()] = Registers.A;
