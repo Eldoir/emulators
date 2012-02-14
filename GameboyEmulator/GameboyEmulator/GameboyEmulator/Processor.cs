@@ -30,6 +30,10 @@ namespace GameboyEmulator
                         romData[Registers.BC] = Registers.A;
                         cycleCount += 8;
                         break;
+                    case 0x03: // INC BC
+                        Registers.BC++;
+                        cycleCount += 8;
+                        break;
                     case 0x04: // INC B
                         {
                             var newValue = (byte)(Registers.B + 1);
@@ -117,6 +121,10 @@ namespace GameboyEmulator
                         romData[Registers.DE] = Registers.A;
                         cycleCount += 8;
                         break;
+                    case 0x13: // INC DE
+                        Registers.DE++;
+                        cycleCount += 8;
+                        break;
                     case 0x14: // INC D
                         {
                             var newValue = (byte)(Registers.D + 1);
@@ -200,6 +208,10 @@ namespace GameboyEmulator
                         romData[Registers.HL++] = Registers.A;
                         cycleCount += 8;
                         break;
+                    case 0x23: // INC HL
+                        Registers.HL++;
+                        cycleCount += 8;
+                        break;
                     case 0x24: // INC H
                         {
                             var newValue = (byte)(Registers.H + 1);
@@ -281,6 +293,10 @@ namespace GameboyEmulator
                         break;
                     case 0x32: // LD (HLD),A / LD (HL-),A / LDD (HL),A
                         romData[Registers.HL--] = Registers.A;
+                        cycleCount += 8;
+                        break;
+                    case 0x33: // INC SP
+                        Registers.SP++;
                         cycleCount += 8;
                         break;
                     case 0x34: // INC (HL)
