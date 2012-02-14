@@ -17,8 +17,7 @@ namespace GameboyEmulator
         {
             do
             {
-                var opcode = romData[ Registers.PC ];
-                Registers.PC++;
+                var opcode = GetByteAtProgramCounter();
 
                 switch (opcode)
                 {
@@ -344,6 +343,7 @@ namespace GameboyEmulator
                         romData[Registers.HL] = GetByteAtProgramCounter();
                         cycleCount += 12;
                         break;
+
                     case 0x39: // ADD HL,SP
                         {
                             Registers.NFlag = false;
@@ -1450,6 +1450,111 @@ namespace GameboyEmulator
                             cycleCount += 8;
                         }
                         break;
+                    case 0xCB:
+                        {
+                            var nextOpCode = GetByteAtProgramCounter();
+
+                            switch (nextOpCode)
+                            {
+                                case 0x30: // SWAP B
+                                    {
+                                        Registers.B = (byte)((Registers.B & 0x0F) << 4 | (Registers.B & 0xF0) >> 4);
+
+                                        Registers.ZFlag = Registers.B == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = false;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x31: // SWAP C
+                                    {
+                                        Registers.C = (byte)((Registers.C & 0x0F) << 4 | (Registers.C & 0xF0) >> 4);
+
+                                        Registers.ZFlag = Registers.B == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = false;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x32: // SWAP D
+                                    {
+                                        Registers.D = (byte)((Registers.D & 0x0F) << 4 | (Registers.D & 0xF0) >> 4);
+
+                                        Registers.ZFlag = Registers.D == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = false;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x33: // SWAP E
+                                    {
+                                        Registers.E = (byte)((Registers.E & 0x0F) << 4 | (Registers.E & 0xF0) >> 4);
+
+                                        Registers.ZFlag = Registers.E == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = false;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x34: // SWAP H
+                                    {
+                                        Registers.H = (byte)((Registers.H & 0x0F) << 4 | (Registers.H & 0xF0) >> 4);
+
+                                        Registers.ZFlag = Registers.H == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = false;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x35: // SWAP L
+                                    {
+                                        Registers.L = (byte)((Registers.L & 0x0F) << 4 | (Registers.L & 0xF0) >> 4);
+
+                                        Registers.ZFlag = Registers.L == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = false;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x36: // SWAP (HL)
+                                    {
+                                        romData[Registers.HL] = (byte)((romData[Registers.HL] & 0x0F) << 4 | (romData[Registers.HL] & 0xF0) >> 4);
+
+                                        Registers.ZFlag = romData[Registers.HL] == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = false;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x37: // SWAP A
+                                    {
+                                        Registers.A = (byte)((Registers.A & 0x0F) << 4 | (Registers.A & 0xF0) >> 4);
+                                        
+                                        Registers.ZFlag = Registers.A == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = false;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                            }
+                        }
+                        break;
                     case 0xCE: // ADC A,#
                         {
                             var regValue = GetByteAtProgramCounter();
@@ -1526,9 +1631,9 @@ namespace GameboyEmulator
                             Registers.NFlag = false;
                             Registers.CFlag = HasCarry(Registers.SP, value);
                             Registers.HFlag = HasHalfCarry(Registers.SP, value);
-                            
+
                             Registers.SP += value;
-                            
+
                             cycleCount += 16; // TODO: check if this should be 8 instead
                         }
                         break;
