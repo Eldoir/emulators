@@ -12,11 +12,14 @@ namespace GameboyEmulator
 
         public Memory ROMMemory { get; private set; }
         public CPURegisters Registers { get; set; }
+        public bool InterruptsAreEnabled { get; private set; }
 
         public void EmulateFrame()
         {
             do
             {
+                var setInterruptsAfterInstruction = mustDisableInterrupts || mustEnableInterrupts;
+                
                 var opcode = GetByteAtProgramCounter();
 
                 switch (opcode)
@@ -118,6 +121,18 @@ namespace GameboyEmulator
                     case 0x0E: // LD C,n
                         Registers.C = GetByteAtProgramCounter();
                         cycleCount += 8;
+                        break;
+                    case 0x10:
+                        {
+                            var nextOpCode = GetByteAtProgramCounter();
+
+                            switch (nextOpCode)
+                            {
+                                case 0x00: // STOP
+                                    cycleCount += 4;
+                                    break;
+                            }
+                        }
                         break;
                     case 0x11: // LD DE,nn
                         Registers.DE = GetUShortAtProgramCounter();
@@ -301,7 +316,7 @@ namespace GameboyEmulator
                             else
                             {
                                 if (Registers.HFlag
-                                    || ( Registers.A & 0x0F) > 0x09)
+                                    || (Registers.A & 0x0F) > 0x09)
                                 {
                                     Registers.A += 0x06;
                                 }
@@ -707,6 +722,9 @@ namespace GameboyEmulator
                     case 0x75: // LD (HL),L
                         romData[Registers.HL] = Registers.L;
                         cycleCount += 8;
+                        break;
+                    case 0x76: // HALT
+                        cycleCount += 4;
                         break;
                     case 0x77: // LD (HL),A
                         romData[Registers.HL] = Registers.A;
@@ -1764,6 +1782,10 @@ namespace GameboyEmulator
                         Registers.A = romData[0xFF00 + Registers.C];
                         cycleCount += 8;
                         break;
+                    case 0xF3: // DI
+                        mustDisableInterrupts = true;
+                        cycleCount += 4;
+                        break;
                     case 0xF5: // PUSH AF
                         romData[--Registers.SP] = Registers.A;
                         romData[--Registers.SP] = Registers.F;
@@ -1799,6 +1821,10 @@ namespace GameboyEmulator
                         Registers.A = romData[GetUShortAtProgramCounter()];
                         cycleCount += 16;
                         break;
+                    case 0xFB: // EI
+                        mustEnableInterrupts = true;
+                        cycleCount += 4;
+                        break;
                     case 0xFE: // CP #
                         {
                             var temp = GetByteAtProgramCounter();
@@ -1811,6 +1837,20 @@ namespace GameboyEmulator
                             cycleCount += 8;
                         }
                         break;
+                }
+
+                if (setInterruptsAfterInstruction)
+                {
+                    if (mustDisableInterrupts)
+                    {
+                        InterruptsAreEnabled = false;
+                    }
+                    else if (mustEnableInterrupts)
+                    {
+                        InterruptsAreEnabled = true;
+                    }
+                    
+                    mustEnableInterrupts = mustDisableInterrupts = false;
                 }
             } while ( cycleCount <= 70224 );
         }
@@ -1880,5 +1920,7 @@ namespace GameboyEmulator
         private const int frameDuration = 70224;
         private int cycleCount;
         private byte[] romData;
+        private bool mustDisableInterrupts = false;
+        private bool mustEnableInterrupts = false;
     }
 }
