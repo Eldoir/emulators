@@ -1969,6 +1969,119 @@ namespace GameboyEmulator
                                         cycleCount += 8;
                                     }
                                     break;
+                                case 0x18: // RR B
+                                    {
+                                        var bit0 = (Registers.B & (1 << 0)) != 0;
+
+                                        Registers.B = (byte)((Registers.B >> 1) | (Registers.CFlag ? 0x80 : 0x00));
+
+                                        Registers.ZFlag = Registers.B == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x19: // RR C
+                                    {
+                                        var bit0 = (Registers.C & (1 << 0)) != 0;
+
+                                        Registers.C = (byte)((Registers.C >> 1) | (Registers.CFlag ? 0x80 : 0x00));
+
+                                        Registers.ZFlag = Registers.C == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x1A: // RR D
+                                    {
+                                        var bit0 = (Registers.D & (1 << 0)) != 0;
+
+                                        Registers.D = (byte)((Registers.D >> 1) | (Registers.CFlag ? 0x80 : 0x00));
+
+                                        Registers.ZFlag = Registers.D == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x1B: // RR E
+                                    {
+                                        var bit0 = (Registers.E & (1 << 0)) != 0;
+
+                                        Registers.E = (byte)((Registers.E >> 1) | (Registers.CFlag ? 0x80 : 0x00));
+
+                                        Registers.ZFlag = Registers.E == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x1C: // RR H
+                                    {
+                                        var bit0 = (Registers.H & (1 << 0)) != 0;
+
+                                        Registers.H = (byte)((Registers.H >> 1) | (Registers.CFlag ? 0x80 : 0x00));
+
+                                        Registers.ZFlag = Registers.H == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x1D: // RR L
+                                    {
+                                        var bit0 = (Registers.L & (1 << 0)) != 0;
+
+                                        Registers.L = (byte)((Registers.L >> 1) | (Registers.CFlag ? 0x80 : 0x00));
+
+                                        Registers.ZFlag = Registers.L == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x1E: // RR (HL)
+                                    {
+                                        var memValue = romData[Registers.HL];
+                                        var bit0 = (memValue & (1 << 0)) != 0;
+
+                                        romData[Registers.HL] = (byte)((memValue >> 1) | (Registers.CFlag ? 0x80 : 0x00));
+
+                                        Registers.ZFlag = memValue == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x1F: // RR A
+                                    {
+                                        var bit0 = (Registers.A & (1 << 0)) != 0;
+
+                                        Registers.A = (byte)((Registers.A >> 1) | (Registers.CFlag ? 0x80 : 0x00));
+
+                                        Registers.ZFlag = Registers.A == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
                                 case 0x30: // SWAP B
                                     {
                                         Registers.B = (byte)((Registers.B & 0x0F) << 4 | (Registers.B & 0xF0) >> 4);
