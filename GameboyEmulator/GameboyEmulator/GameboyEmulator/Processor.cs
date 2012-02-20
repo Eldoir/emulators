@@ -249,6 +249,74 @@ namespace GameboyEmulator
                         Registers.H = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
+                    case 0x27: // DAA
+                        {
+                            /*
+                             --------------------------------------------------------------------------------
+                            |           | C Flag  | HEX value in | H Flag | HEX value in | Number  | C flag|
+                            | Operation | Before  | upper digit  | Before | lower digit  | added   | After |
+                            |           | DAA     | (bit 7-4)    | DAA    | (bit 3-0)    | to byte | DAA   |
+                            |------------------------------------------------------------------------------|
+                            |           |    0    |     0-9      |   0    |     0-9      |   00    |   0   |
+                            |   ADD     |    0    |     0-8      |   0    |     A-F      |   06    |   0   |
+                            |           |    0    |     0-9      |   1    |     0-3      |   06    |   0   |
+                            |   ADC     |    0    |     A-F      |   0    |     0-9      |   60    |   1   |
+                            |           |    0    |     9-F      |   0    |     A-F      |   66    |   1   |
+                            |   INC     |    0    |     A-F      |   1    |     0-3      |   66    |   1   |
+                            |           |    1    |     0-2      |   0    |     0-9      |   60    |   1   |
+                            |           |    1    |     0-2      |   0    |     A-F      |   66    |   1   |
+                            |           |    1    |     0-3      |   1    |     0-3      |   66    |   1   |
+                            |------------------------------------------------------------------------------|
+                            |   SUB     |    0    |     0-9      |   0    |     0-9      |   00    |   0   |
+                            |   SBC     |    0    |     0-8      |   1    |     6-F      |   FA    |   0   |
+                            |   DEC     |    1    |     7-F      |   0    |     0-9      |   A0    |   1   |
+                            |   NEG     |    1    |     6-F      |   1    |     6-F      |   9A    |   1   |
+                            |------------------------------------------------------------------------------|
+                             */
+
+                            if (Registers.NFlag) // Substraction
+                            {
+                                if (!Registers.CFlag)
+                                {
+                                    if (Registers.HFlag)
+                                    {
+                                        Registers.A += 0xFA;
+                                    }
+                                }
+                                else
+                                {
+                                    if (!Registers.HFlag)
+                                    {
+                                        Registers.A += 0xA0;
+                                    }
+                                    else
+                                    {
+                                        Registers.A += 0x9A;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if ( Registers.HFlag
+                                    || Registers.A & 0x0F > 0x09 )
+                                {
+                                    Registers.A += 0x06;
+                                }
+                                
+                                if ( Registers.CFlag
+                                    || Registers.A & 0xF0 > 0x90 )
+                                {
+                                    Registers.A += 0x60;
+                                    Registers.CFlag = true;
+                                }
+                            }
+
+                            Registers.HFlag = false;
+                            Registers.ZFlag = Registers.A == 0;
+
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x29: // ADD HL,HL
                         {
                             Registers.NFlag = false;
@@ -1543,7 +1611,7 @@ namespace GameboyEmulator
                                 case 0x37: // SWAP A
                                     {
                                         Registers.A = (byte)((Registers.A & 0x0F) << 4 | (Registers.A & 0xF0) >> 4);
-                                        
+
                                         Registers.ZFlag = Registers.A == 0;
                                         Registers.NFlag = false;
                                         Registers.HFlag = false;
