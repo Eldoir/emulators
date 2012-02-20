@@ -190,6 +190,20 @@ namespace GameboyEmulator
                         Registers.D = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
+                    case 0x17: // RLA
+                        {
+                            var bit7 = (Registers.A & (1 << 7)) != 0;
+
+                            Registers.A = (byte)((Registers.A << 1) | ( Registers.CFlag ? 0x01 : 0x00 ) );
+
+                            Registers.ZFlag = Registers.A == 0;
+                            Registers.NFlag = false;
+                            Registers.HFlag = false;
+                            Registers.CFlag = bit7;
+
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x19: // ADD HL,DE
                         {
                             Registers.NFlag = false;
