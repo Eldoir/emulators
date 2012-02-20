@@ -21,6 +21,9 @@ namespace GameboyEmulator
 
                 switch (opcode)
                 {
+                    case 0x00: // NOP
+                        cycleCount += 4;
+                        break;
                     case 0x01: // LD BC,nn
                         Registers.BC = GetUShortAtProgramCounter();
                         cycleCount += 12;
@@ -297,14 +300,14 @@ namespace GameboyEmulator
                             }
                             else
                             {
-                                if ( Registers.HFlag
-                                    || Registers.A & 0x0F > 0x09 )
+                                if (Registers.HFlag
+                                    || ( Registers.A & 0x0F) > 0x09)
                                 {
                                     Registers.A += 0x06;
                                 }
-                                
-                                if ( Registers.CFlag
-                                    || Registers.A & 0xF0 > 0x90 )
+
+                                if (Registers.CFlag
+                                    || (Registers.A & 0xF0) > 0x90)
                                 {
                                     Registers.A += 0x60;
                                     Registers.CFlag = true;
@@ -366,6 +369,16 @@ namespace GameboyEmulator
                         Registers.L = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
+                    case 0x2F: // CPL
+                        {
+                            Registers.A = (byte)~Registers.A;
+
+                            Registers.NFlag = true;
+                            Registers.HFlag = true;
+
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x31: // LD SP,nn
                         Registers.SP = GetUShortAtProgramCounter();
                         cycleCount += 12;
@@ -411,7 +424,16 @@ namespace GameboyEmulator
                         romData[Registers.HL] = GetByteAtProgramCounter();
                         cycleCount += 12;
                         break;
+                    case 0x37: // SCF
+                        {
+                            Registers.CFlag = true;
 
+                            Registers.NFlag = false;
+                            Registers.HFlag = false;
+
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x39: // ADD HL,SP
                         {
                             Registers.NFlag = false;
@@ -459,6 +481,16 @@ namespace GameboyEmulator
                     case 0x3E: // LD A,#
                         Registers.A = GetByteAtProgramCounter();
                         cycleCount += 8;
+                        break;
+                    case 0x3F: // CCF
+                        {
+                            Registers.CFlag = !Registers.CFlag;
+
+                            Registers.NFlag = false;
+                            Registers.HFlag = false;
+
+                            cycleCount += 4;
+                        }
                         break;
                     case 0x40: // LD B,B
                         Registers.B = Registers.B;
