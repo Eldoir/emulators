@@ -136,6 +136,20 @@ namespace GameboyEmulator
                         Registers.C = GetByteAtProgramCounter();
                         cycleCount += 8;
                         break;
+                    case 0x0F: // RRCA
+                        {
+                            var bit7 = (Registers.A & (1 << 0)) != 0;
+
+                            Registers.A = (byte)((Registers.A >> 1) | (Registers.A << 7));
+
+                            Registers.ZFlag = Registers.A == 0;
+                            Registers.NFlag = false;
+                            Registers.HFlag = false;
+                            Registers.CFlag = bit7;
+
+                            cycleCount += 4;
+                        }
+                        break;
                     case 0x10:
                         {
                             var nextOpCode = GetByteAtProgramCounter();
@@ -252,6 +266,20 @@ namespace GameboyEmulator
                     case 0x1E: // LD E,n
                         Registers.E = GetByteAtProgramCounter();
                         cycleCount += 8;
+                        break;
+                    case 0x17: // RRA
+                        {
+                            var bit7 = (Registers.A & (1 << 0)) != 0;
+
+                            Registers.A = (byte)((Registers.A >> 1) | (Registers.CFlag ? 0x80 : 0x00));
+
+                            Registers.ZFlag = Registers.A == 0;
+                            Registers.NFlag = false;
+                            Registers.HFlag = false;
+                            Registers.CFlag = bit7;
+
+                            cycleCount += 4;
+                        }
                         break;
                     case 0x21: // LD HL,nn
                         Registers.HL = GetUShortAtProgramCounter();
