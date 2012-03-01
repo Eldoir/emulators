@@ -2082,6 +2082,118 @@ namespace GameboyEmulator
                                         cycleCount += 8;
                                     }
                                     break;
+                                case 0x20: // SLA B
+                                    {
+                                        var bit7 = (Registers.B & (1 << 7)) != 0;
+
+                                        Registers.B <<= 1;
+
+                                        Registers.ZFlag = Registers.B == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit7;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x21: // SLA C
+                                    {
+                                        var bit7 = (Registers.C & (1 << 7)) != 0;
+
+                                        Registers.C <<= 1;
+
+                                        Registers.ZFlag = Registers.C == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit7;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x22: // SLA D
+                                    {
+                                        var bit7 = (Registers.D & (1 << 7)) != 0;
+
+                                        Registers.D <<= 1;
+
+                                        Registers.ZFlag = Registers.D == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit7;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x23: // SLA E
+                                    {
+                                        var bit7 = (Registers.E & (1 << 7)) != 0;
+
+                                        Registers.E <<= 1;
+
+                                        Registers.ZFlag = Registers.E == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit7;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x24: // SLA H
+                                    {
+                                        var bit7 = (Registers.H & (1 << 7)) != 0;
+
+                                        Registers.H <<= 1;
+
+                                        Registers.ZFlag = Registers.H == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit7;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x25: // SLA L
+                                    {
+                                        var bit7 = (Registers.L & (1 << 7)) != 0;
+
+                                        Registers.L <<= 1;
+
+                                        Registers.ZFlag = Registers.L == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit7;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x26: // SLA (HL)
+                                    {
+                                        var bit7 = (romData[Registers.HL] & (1 << 7)) != 0;
+
+                                        romData[Registers.HL] <<= 1;
+
+                                        Registers.ZFlag = romData[Registers.HL] == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit7;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x27: // SLA A
+                                    {
+                                        var bit7 = ( Registers.A & ( 1 << 7 ) ) != 0;
+
+                                        Registers.A <<= 1;
+
+                                        Registers.ZFlag = Registers.A == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit7;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
                                 case 0x30: // SWAP B
                                     {
                                         Registers.B = (byte)((Registers.B & 0x0F) << 4 | (Registers.B & 0xF0) >> 4);
