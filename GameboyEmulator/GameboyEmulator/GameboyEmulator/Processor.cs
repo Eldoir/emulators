@@ -2197,8 +2197,9 @@ namespace GameboyEmulator
                                 case 0x28: // SRA B
                                     {
                                         var bit0 = (Registers.B & (1 << 0)) != 0;
+                                        var bit7 = (Registers.B & (1 << 7));
 
-                                        Registers.B >>= 1;
+                                        Registers.B = (byte)(bit7 | Registers.B >> 1);
 
                                         Registers.ZFlag = Registers.B == 0;
                                         Registers.NFlag = false;
@@ -2211,8 +2212,9 @@ namespace GameboyEmulator
                                 case 0x29: // SRA C
                                     {
                                         var bit0 = (Registers.C & (1 << 0)) != 0;
+                                        var bit7 = (Registers.C & (1 << 7));
 
-                                        Registers.C >>= 1;
+                                        Registers.C = (byte)(bit7 | Registers.C >> 1);
 
                                         Registers.ZFlag = Registers.C == 0;
                                         Registers.NFlag = false;
@@ -2225,8 +2227,9 @@ namespace GameboyEmulator
                                 case 0x2A: // SRA D
                                     {
                                         var bit0 = (Registers.D & (1 << 0)) != 0;
+                                        var bit7 = (Registers.D & (1 << 7));
 
-                                        Registers.D >>= 1;
+                                        Registers.D = (byte)(bit7 | Registers.D >> 1);
 
                                         Registers.ZFlag = Registers.D == 0;
                                         Registers.NFlag = false;
@@ -2239,8 +2242,9 @@ namespace GameboyEmulator
                                 case 0x2B: // SRA E
                                     {
                                         var bit0 = (Registers.E & (1 << 0)) != 0;
+                                        var bit7 = (Registers.E & (1 << 7));
 
-                                        Registers.E >>= 1;
+                                        Registers.E = (byte)(bit7 | Registers.E >> 1);
 
                                         Registers.ZFlag = Registers.E == 0;
                                         Registers.NFlag = false;
@@ -2253,8 +2257,9 @@ namespace GameboyEmulator
                                 case 0x2C: // SRA H
                                     {
                                         var bit0 = (Registers.H & (1 << 0)) != 0;
+                                        var bit7 = (Registers.H & (1 << 7));
 
-                                        Registers.H >>= 1;
+                                        Registers.H = (byte)(bit7 | Registers.H >> 1);
 
                                         Registers.ZFlag = Registers.H == 0;
                                         Registers.NFlag = false;
@@ -2267,8 +2272,9 @@ namespace GameboyEmulator
                                 case 0x2D: // SRA L
                                     {
                                         var bit0 = (Registers.L & (1 << 0)) != 0;
+                                        var bit7 = (Registers.L & (1 << 7));
 
-                                        Registers.L >>= 1;
+                                        Registers.L = (byte)(bit7 | Registers.L >> 1);
 
                                         Registers.ZFlag = Registers.L == 0;
                                         Registers.NFlag = false;
@@ -2281,8 +2287,9 @@ namespace GameboyEmulator
                                 case 0x2E: // SRA (HL)
                                     {
                                         var bit0 = (romData[Registers.HL] & (1 << 0)) != 0;
+                                        var bit7 = (romData[Registers.HL] & (1 << 7));
 
-                                        romData[Registers.HL] >>= 1;
+                                        romData[Registers.HL] = (byte)(bit7 | romData[Registers.HL] >> 1);
 
                                         Registers.ZFlag = romData[Registers.HL] == 0;
                                         Registers.NFlag = false;
