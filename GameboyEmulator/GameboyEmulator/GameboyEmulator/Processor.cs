@@ -2410,6 +2410,118 @@ namespace GameboyEmulator
                                         cycleCount += 8;
                                     }
                                     break;
+                                case 0x38: // SRL B
+                                    {
+                                        var bit0 = (Registers.B & (1 << 0)) != 0;
+
+                                        Registers.B >>= 1;
+
+                                        Registers.ZFlag = Registers.B == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x39: // SRL C
+                                    {
+                                        var bit0 = (Registers.C & (1 << 0)) != 0;
+
+                                        Registers.C >>= 1;
+
+                                        Registers.ZFlag = Registers.C == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x3A: // SRL D
+                                    {
+                                        var bit0 = (Registers.D & (1 << 0)) != 0;
+
+                                        Registers.D >>= 1;
+
+                                        Registers.ZFlag = Registers.D == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x3B: // SRL E
+                                    {
+                                        var bit0 = (Registers.E & (1 << 0)) != 0;
+
+                                        Registers.E >>= 1;
+
+                                        Registers.ZFlag = Registers.E == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x3C: // SRL H
+                                    {
+                                        var bit0 = (Registers.H & (1 << 0)) != 0;
+
+                                        Registers.H >>= 1;
+
+                                        Registers.ZFlag = Registers.H == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x3D: // SRL L
+                                    {
+                                        var bit0 = (Registers.L & (1 << 0)) != 0;
+
+                                        Registers.L >>= 1;
+
+                                        Registers.ZFlag = Registers.L == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x3E: // SRL (HL)
+                                    {
+                                        var bit0 = (romData[Registers.HL] & (1 << 0)) != 0;
+
+                                        romData[Registers.HL] >>= 1;
+
+                                        Registers.ZFlag = romData[Registers.HL] == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x3F: // SRL A
+                                    {
+                                        var bit0 = (Registers.A & (1 << 0)) != 0;
+                                        
+                                        Registers.A >>= 1;
+
+                                        Registers.ZFlag = Registers.A == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = false;
+                                        Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
                             }
                         }
                         break;
