@@ -2182,7 +2182,7 @@ namespace GameboyEmulator
                                     break;
                                 case 0x27: // SLA A
                                     {
-                                        var bit7 = ( Registers.A & ( 1 << 7 ) ) != 0;
+                                        var bit7 = (Registers.A & (1 << 7)) != 0;
 
                                         Registers.A <<= 1;
 
@@ -2511,13 +2511,589 @@ namespace GameboyEmulator
                                 case 0x3F: // SRL A
                                     {
                                         var bit0 = (Registers.A & (1 << 0)) != 0;
-                                        
+
                                         Registers.A >>= 1;
 
                                         Registers.ZFlag = Registers.A == 0;
                                         Registers.NFlag = false;
                                         Registers.HFlag = false;
                                         Registers.CFlag = bit0;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x40: // BIT 0, B
+                                    {
+                                        Registers.ZFlag = (Registers.B & (1 << 0)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x41: // BIT 0, C
+                                    {
+                                        Registers.ZFlag = (Registers.C & (1 << 0)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x42: // BIT 0, D
+                                    {
+                                        Registers.ZFlag = (Registers.D & (1 << 0)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x43: // BIT 0, E
+                                    {
+                                        Registers.ZFlag = (Registers.E & (1 << 0)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x44: // BIT 0, H
+                                    {
+                                        Registers.ZFlag = (Registers.H & (1 << 0)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x45: // BIT 0, L
+                                    {
+                                        Registers.ZFlag = (Registers.L & (1 << 0)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x46: // BIT 0, (HL)
+                                    {
+                                        Registers.ZFlag = (romData[Registers.HL] & (1 << 0)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x47: // BIT 0, A
+                                    {
+                                        Registers.ZFlag = (Registers.A & (1 << 0)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x48: // BIT 1, B
+                                    {
+                                        Registers.ZFlag = (Registers.B & (1 << 1)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x49: // BIT 1, C
+                                    {
+                                        Registers.ZFlag = (Registers.C & (1 << 1)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x4A: // BIT 1, D
+                                    {
+                                        Registers.ZFlag = (Registers.D & (1 << 1)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x4B: // BIT 1, E
+                                    {
+                                        Registers.ZFlag = (Registers.E & (1 << 1)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x4C: // BIT 1, H
+                                    {
+                                        Registers.ZFlag = (Registers.H & (1 << 1)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x4D: // BIT 1, L
+                                    {
+                                        Registers.ZFlag = (Registers.L & (1 << 1)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x4E: // BIT 1, (HL)
+                                    {
+                                        Registers.ZFlag = (romData[Registers.HL] & (1 << 1)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x4F: // BIT 1, A
+                                    {
+                                        Registers.ZFlag = (Registers.A & (1 << 1)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x50: // BIT 2, B
+                                    {
+                                        Registers.ZFlag = (Registers.B & (1 << 2)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x51: // BIT 2, C
+                                    {
+                                        Registers.ZFlag = (Registers.C & (1 << 2)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x52: // BIT 2, D
+                                    {
+                                        Registers.ZFlag = (Registers.D & (1 << 2)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x53: // BIT 2, E
+                                    {
+                                        Registers.ZFlag = (Registers.E & (1 << 2)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x54: // BIT 2, H
+                                    {
+                                        Registers.ZFlag = (Registers.H & (1 << 2)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x55: // BIT 2, L
+                                    {
+                                        Registers.ZFlag = (Registers.L & (1 << 2)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x56: // BIT 2, (HL)
+                                    {
+                                        Registers.ZFlag = (romData[Registers.HL] & (1 << 2)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x57: // BIT 2, A
+                                    {
+                                        Registers.ZFlag = (Registers.A & (1 << 2)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x58: // BIT 3, B
+                                    {
+                                        Registers.ZFlag = (Registers.B & (1 << 3)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x59: // BIT 3, C
+                                    {
+                                        Registers.ZFlag = (Registers.C & (1 << 3)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x5A: // BIT 3, D
+                                    {
+                                        Registers.ZFlag = (Registers.D & (1 << 3)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x5B: // BIT 3, E
+                                    {
+                                        Registers.ZFlag = (Registers.E & (1 << 3)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x5C: // BIT 3, H
+                                    {
+                                        Registers.ZFlag = (Registers.H & (1 << 3)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x5D: // BIT 3, L
+                                    {
+                                        Registers.ZFlag = (Registers.L & (1 << 3)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x5E: // BIT 3, (HL)
+                                    {
+                                        Registers.ZFlag = (romData[Registers.HL] & (1 << 3)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x5F: // BIT 3, A
+                                    {
+                                        Registers.ZFlag = (Registers.A & (1 << 3)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x60: // BIT 4, B
+                                    {
+                                        Registers.ZFlag = (Registers.B & (1 << 4)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x61: // BIT 4, C
+                                    {
+                                        Registers.ZFlag = (Registers.C & (1 << 4)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x62: // BIT 4, D
+                                    {
+                                        Registers.ZFlag = (Registers.D & (1 << 4)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x63: // BIT 4, E
+                                    {
+                                        Registers.ZFlag = (Registers.E & (1 << 4)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x64: // BIT 4, H
+                                    {
+                                        Registers.ZFlag = (Registers.H & (1 << 4)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x65: // BIT 4, L
+                                    {
+                                        Registers.ZFlag = (Registers.L & (1 << 4)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x66: // BIT 4, (HL)
+                                    {
+                                        Registers.ZFlag = (romData[Registers.HL] & (1 << 4)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x67: // BIT 4, A
+                                    {
+                                        Registers.ZFlag = (Registers.A & (1 << 4)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x68: // BIT 5, B
+                                    {
+                                        Registers.ZFlag = (Registers.B & (1 << 5)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x69: // BIT 5, C
+                                    {
+                                        Registers.ZFlag = (Registers.C & (1 << 5)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x6A: // BIT 5, D
+                                    {
+                                        Registers.ZFlag = (Registers.D & (1 << 5)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x6B: // BIT 5, E
+                                    {
+                                        Registers.ZFlag = (Registers.E & (1 << 5)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x6C: // BIT 5, H
+                                    {
+                                        Registers.ZFlag = (Registers.H & (1 << 5)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x6D: // BIT 5, L
+                                    {
+                                        Registers.ZFlag = (Registers.L & (1 << 5)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x6E: // BIT 5, (HL)
+                                    {
+                                        Registers.ZFlag = (romData[Registers.HL] & (1 << 5)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x6F: // BIT 5, A
+                                    {
+                                        Registers.ZFlag = (Registers.A & (1 << 5)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x70: // BIT 6, B
+                                    {
+                                        Registers.ZFlag = (Registers.B & (1 << 6)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x71: // BIT 6, C
+                                    {
+                                        Registers.ZFlag = (Registers.C & (1 << 6)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x72: // BIT 6, D
+                                    {
+                                        Registers.ZFlag = (Registers.D & (1 << 6)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x73: // BIT 6, E
+                                    {
+                                        Registers.ZFlag = (Registers.E & (1 << 6)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x74: // BIT 6, H
+                                    {
+                                        Registers.ZFlag = (Registers.H & (1 << 6)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x75: // BIT 6, L
+                                    {
+                                        Registers.ZFlag = (Registers.L & (1 << 6)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x76: // BIT 6, (HL)
+                                    {
+                                        Registers.ZFlag = (romData[Registers.HL] & (1 << 6)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x77: // BIT 6, A
+                                    {
+                                        Registers.ZFlag = (Registers.A & (1 << 6)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x78: // BIT 7, B
+                                    {
+                                        Registers.ZFlag = (Registers.B & (1 << 7)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x79: // BIT 7, C
+                                    {
+                                        Registers.ZFlag = (Registers.C & (1 << 7)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x7A: // BIT 7, D
+                                    {
+                                        Registers.ZFlag = (Registers.D & (1 << 7)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x7B: // BIT 7, E
+                                    {
+                                        Registers.ZFlag = (Registers.E & (1 << 7)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x7C: // BIT 7, H
+                                    {
+                                        Registers.ZFlag = (Registers.H & (1 << 7)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x7D: // BIT 7, L
+                                    {
+                                        Registers.ZFlag = (Registers.L & (1 << 7)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x7E: // BIT 7, (HL)
+                                    {
+                                        Registers.ZFlag = (romData[Registers.HL] & (1 << 7)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x7F: // BIT 7, A
+                                    {
+                                        Registers.ZFlag = (Registers.A & (1 << 7)) == 0;
+                                        Registers.NFlag = false;
+                                        Registers.HFlag = true;
 
                                         cycleCount += 8;
                                     }
