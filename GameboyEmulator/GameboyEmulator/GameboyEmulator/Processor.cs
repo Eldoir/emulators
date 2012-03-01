@@ -2302,8 +2302,9 @@ namespace GameboyEmulator
                                 case 0x2F: // SRA A
                                     {
                                         var bit0 = (Registers.A & (1 << 0)) != 0;
+                                        var bit7 = (Registers.A & (1 << 7));
 
-                                        Registers.A >>= 1;
+                                        Registers.A = (byte)(bit7 | Registers.A >> 1);
 
                                         Registers.ZFlag = Registers.A == 0;
                                         Registers.NFlag = false;
