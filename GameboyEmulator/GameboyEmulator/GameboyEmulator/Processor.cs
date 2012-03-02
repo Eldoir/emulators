@@ -3098,6 +3098,902 @@ namespace GameboyEmulator
                                         cycleCount += 8;
                                     }
                                     break;
+                                case 0x80: // RES 0, B
+                                    {
+                                        Registers.B = ( byte ) ( Registers.B & ~( 1 << 0 ) );
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x81: // RES 0, C
+                                    {
+                                        Registers.C = (byte)(Registers.C & ~(1 << 0));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x82: // RES 0, D
+                                    {
+                                        Registers.D = (byte)(Registers.D & ~(1 << 0));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x83: // RES 0, E
+                                    {
+                                        Registers.E = (byte)(Registers.E & ~(1 << 0));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x84: // RES 0, H
+                                    {
+                                        Registers.H = (byte)(Registers.H & ~(1 << 0));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x85: // RES 0, L
+                                    {
+                                        Registers.L = (byte)(Registers.L & ~(1 << 0));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x86: // RES 0, (HL)
+                                    {
+                                        romData[Registers.HL] = (byte)(romData[Registers.HL] & ~(1 << 0));
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x87: // RES 0, A
+                                    {
+                                        Registers.A = (byte)(Registers.A & ~(1 << 0));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x88: // RES 1, B
+                                    {
+                                        Registers.B = (byte)(Registers.B & ~(1 << 1));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x89: // RES 1, C
+                                    {
+                                        Registers.C = (byte)(Registers.C & ~(1 << 1));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x8A: // RES 1, D
+                                    {
+                                        Registers.D = (byte)(Registers.D & ~(1 << 1));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x8B: // RES 1, E
+                                    {
+                                        Registers.E = (byte)(Registers.E & ~(1 << 1));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x8C: // RES 1, H
+                                    {
+                                        Registers.H = (byte)(Registers.H & ~(1 << 1));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x8D: // RES 1, L
+                                    {
+                                        Registers.L = (byte)(Registers.L & ~(1 << 1));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x8E: // RES 1, (HL)
+                                    {
+                                        romData[Registers.HL] = (byte)(romData[Registers.HL] & ~(1 << 1));
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x8F: // RES 1, A
+                                    {
+                                        Registers.A = (byte)(Registers.A & ~(1 << 1));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x90: // RES 2, B
+                                    {
+                                        Registers.B = (byte)(Registers.B & ~(1 << 2));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x91: // RES 2, C
+                                    {
+                                        Registers.C = (byte)(Registers.C & ~(1 << 2));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x92: // RES 2, D
+                                    {
+                                        Registers.D = (byte)(Registers.D & ~(1 << 2));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x93: // RES 2, E
+                                    {
+                                        Registers.E = (byte)(Registers.E & ~(1 << 2));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x94: // RES 2, H
+                                    {
+                                        Registers.H = (byte)(Registers.H & ~(1 << 2));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x95: // RES 2, L
+                                    {
+                                        Registers.L = (byte)(Registers.L & ~(1 << 2));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x96: // RES 2, (HL)
+                                    {
+                                        romData[Registers.HL] = (byte)(romData[Registers.HL] & ~(1 << 2));
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x97: // RES 2, A
+                                    {
+                                        Registers.A = (byte)(Registers.A & ~(1 << 2));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x98: // RES 3, B
+                                    {
+                                        Registers.B = (byte)(Registers.B & ~(1 << 3));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x99: // RES 3, C
+                                    {
+                                        Registers.C = (byte)(Registers.C & ~(1 << 3));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x9A: // RES 3, D
+                                    {
+                                        Registers.D = (byte)(Registers.D & ~(1 << 3));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x9B: // RES 3, E
+                                    {
+                                        Registers.E = (byte)(Registers.E & ~(1 << 3));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x9C: // RES 3, H
+                                    {
+                                        Registers.H = (byte)(Registers.H & ~(1 << 3));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x9D: // RES 3, L
+                                    {
+                                        Registers.L = (byte)(Registers.L & ~(1 << 3));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0x9E: // RES 3, (HL)
+                                    {
+                                        romData[Registers.HL] = (byte)(romData[Registers.HL] & ~(1 << 3));
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0x9F: // RES 3, A
+                                    {
+                                        Registers.A = (byte)(Registers.A & ~(1 << 3));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xA0: // RES 4, B
+                                    {
+                                        Registers.B = (byte)(Registers.B & ~(1 << 4));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xA1: // RES 4, C
+                                    {
+                                        Registers.C = (byte)(Registers.C & ~(1 << 4));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xA2: // RES 4, D
+                                    {
+                                        Registers.D = (byte)(Registers.D & ~(1 << 4));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xA3: // RES 4, E
+                                    {
+                                        Registers.E = (byte)(Registers.E & ~(1 << 4));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xA4: // RES 4, H
+                                    {
+                                        Registers.H = (byte)(Registers.H & ~(1 << 4));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xA5: // RES 4, L
+                                    {
+                                        Registers.L = (byte)(Registers.L & ~(1 << 4));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xA6: // RES 4, (HL)
+                                    {
+                                        romData[Registers.HL] = (byte)(romData[Registers.HL] & ~(1 << 4));
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xA7: // RES 4, A
+                                    {
+                                        Registers.A = (byte)(Registers.A & ~(1 << 4));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xA8: // RES 5, B
+                                    {
+                                        Registers.B = (byte)(Registers.B & ~(1 << 5));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xA9: // RES 5, C
+                                    {
+                                        Registers.C = (byte)(Registers.C & ~(1 << 5));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xAA: // RES 5, D
+                                    {
+                                        Registers.D = (byte)(Registers.D & ~(1 << 5));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xAB: // RES 5, E
+                                    {
+                                        Registers.E = (byte)(Registers.E & ~(1 << 5));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xAC: // RES 5, H
+                                    {
+                                        Registers.H = (byte)(Registers.H & ~(1 << 5));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xAD: // RES 5, L
+                                    {
+                                        Registers.L = (byte)(Registers.L & ~(1 << 5));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xAE: // RES 5, (HL)
+                                    {
+                                        romData[Registers.HL] = (byte)(romData[Registers.HL] & ~(1 << 5));
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xAF: // RES 5, A
+                                    {
+                                        Registers.A = (byte)(Registers.A & ~(1 << 5));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xB0: // RES 6, B
+                                    {
+                                        Registers.B = (byte)(Registers.B & ~(1 << 6));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xB1: // RES 6, C
+                                    {
+                                        Registers.C = (byte)(Registers.C & ~(1 << 6));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xB2: // RES 6, D
+                                    {
+                                        Registers.D = (byte)(Registers.D & ~(1 << 6));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xB3: // RES 6, E
+                                    {
+                                        Registers.E = (byte)(Registers.E & ~(1 << 6));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xB4: // RES 6, H
+                                    {
+                                        Registers.H = (byte)(Registers.H & ~(1 << 6));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xB5: // RES 6, L
+                                    {
+                                        Registers.L = (byte)(Registers.L & ~(1 << 6));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xB6: // RES 6, (HL)
+                                    {
+                                        romData[Registers.HL] = (byte)(romData[Registers.HL] & ~(1 << 6));
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xB7: // RES 6, A
+                                    {
+                                        Registers.A = (byte)(Registers.A & ~(1 << 6));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xB8: // RES 7, B
+                                    {
+                                        Registers.B = (byte)(Registers.B & ~(1 << 7));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xB9: // RES 7, C
+                                    {
+                                        Registers.C = (byte)(Registers.C & ~(1 << 7));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xBA: // RES 7, D
+                                    {
+                                        Registers.D = (byte)(Registers.D & ~(1 << 7));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xBB: // RES 7, E
+                                    {
+                                        Registers.E = (byte)(Registers.E & ~(1 << 7));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xBC: // RES 7, H
+                                    {
+                                        Registers.H = (byte)(Registers.H & ~(1 << 7));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xBD: // RES 7, L
+                                    {
+                                        Registers.L = (byte)(Registers.L & ~(1 << 7));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xBE: // RES 7, (HL)
+                                    {
+                                        romData[Registers.HL] = (byte)(romData[Registers.HL] & ~(1 << 7));
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xBF: // RES 7, A
+                                    {
+                                        Registers.A = (byte)(Registers.A & ~(1 << 7));
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xC0: // SET 0, B
+                                    {
+                                        Registers.B |= (1 << 0);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xC1: // SET 0, C
+                                    {
+                                        Registers.C |= (1 << 0);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xC2: // SET 0, D
+                                    {
+                                        Registers.D |= (1 << 0);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xC3: // SET 0, E
+                                    {
+                                        Registers.E |= (1 << 0);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xC4: // SET 0, H
+                                    {
+                                        Registers.H |= (1 << 0);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xC5: // SET 0, L
+                                    {
+                                        Registers.L |= (1 << 0);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xC6: // SET 0, (HL)
+                                    {
+                                        romData[Registers.HL] |= (1 << 0);
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xC7: // SET 0, A
+                                    {
+                                        Registers.A |= (1 << 0);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xC8: // SET 1, B
+                                    {
+                                        Registers.B |= (1 << 1);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xC9: // SET 1, C
+                                    {
+                                        Registers.C |= (1 << 1);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xCA: // SET 1, D
+                                    {
+                                        Registers.D |= (1 << 1);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xCB: // SET 1, E
+                                    {
+                                        Registers.E |= (1 << 1);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xCC: // SET 1, H
+                                    {
+                                        Registers.H |= (1 << 1);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xCD: // SET 1, L
+                                    {
+                                        Registers.L |= (1 << 1);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xCE: // SET 1, (HL)
+                                    {
+                                        romData[Registers.HL] |= (1 << 1);
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xCF: // SET 1, A
+                                    {
+                                        Registers.A |= (1 << 1);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xD0: // SET 2, B
+                                    {
+                                        Registers.B |= (1 << 2);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xD1: // SET 2, C
+                                    {
+                                        Registers.C |= (1 << 2);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xD2: // SET 2, D
+                                    {
+                                        Registers.D |= (1 << 2);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xD3: // SET 2, E
+                                    {
+                                        Registers.E |= (1 << 2);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xD4: // SET 2, H
+                                    {
+                                        Registers.H |= (1 << 2);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xD5: // SET 2, L
+                                    {
+                                        Registers.L |= (1 << 2);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xD6: // SET 2, (HL)
+                                    {
+                                        romData[Registers.HL] |= (1 << 2);
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xD7: // SET 2, A
+                                    {
+                                        Registers.A |= (1 << 2);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xD8: // SET 3, B
+                                    {
+                                        Registers.B |= (1 << 3);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xD9: // SET 3, C
+                                    {
+                                        Registers.C |= (1 << 3);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xDA: // SET 3, D
+                                    {
+                                        Registers.D |= (1 << 3);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xDB: // SET 3, E
+                                    {
+                                        Registers.E |= (1 << 3);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xDC: // SET 3, H
+                                    {
+                                        Registers.H |= (1 << 3);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xDD: // SET 3, L
+                                    {
+                                        Registers.L |= (1 << 3);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xDE: // SET 3, (HL)
+                                    {
+                                        romData[Registers.HL] |= (1 << 3);
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xDF: // SET 3, A
+                                    {
+                                        Registers.A |= (1 << 3);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xE0: // SET 4, B
+                                    {
+                                        Registers.B |= (1 << 4);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xE1: // SET 4, C
+                                    {
+                                        Registers.C |= (1 << 4);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xE2: // SET 4, D
+                                    {
+                                        Registers.D |= (1 << 4);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xE3: // SET 4, E
+                                    {
+                                        Registers.E |= (1 << 4);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xE4: // SET 4, H
+                                    {
+                                        Registers.H |= (1 << 4);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xE5: // SET 4, L
+                                    {
+                                        Registers.L |= (1 << 4);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xE6: // SET 4, (HL)
+                                    {
+                                        romData[Registers.HL] |= (1 << 4);
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xE7: // SET 4, A
+                                    {
+                                        Registers.A |= (1 << 4);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xE8: // SET 5, B
+                                    {
+                                        Registers.B |= (1 << 5);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xE9: // SET 5, C
+                                    {
+                                        Registers.C |= (1 << 5);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xEA: // SET 5, D
+                                    {
+                                        Registers.D |= (1 << 5);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xEB: // SET 5, E
+                                    {
+                                        Registers.E |= (1 << 5);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xEC: // SET 5, H
+                                    {
+                                        Registers.H |= (1 << 5);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xED: // SET 5, L
+                                    {
+                                        Registers.L |= (1 << 5);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xEE: // SET 5, (HL)
+                                    {
+                                        romData[Registers.HL] |= (1 << 5);
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xEF: // SET 5, A
+                                    {
+                                        Registers.A |= (1 << 5);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xF0: // SET 6, B
+                                    {
+                                        Registers.B |= (1 << 6);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xF1: // SET 6, C
+                                    {
+                                        Registers.C |= (1 << 6);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xF2: // SET 6, D
+                                    {
+                                        Registers.D |= (1 << 6);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xF3: // SET 6, E
+                                    {
+                                        Registers.E |= (1 << 6);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xF4: // SET 6, H
+                                    {
+                                        Registers.H |= (1 << 6);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xF5: // SET 6, L
+                                    {
+                                        Registers.L |= (1 << 6);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xF6: // SET 6, (HL)
+                                    {
+                                        romData[Registers.HL] |= (1 << 6);
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xF7: // SET 6, A
+                                    {
+                                        Registers.A |= (1 << 6);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xF8: // SET 7, B
+                                    {
+                                        Registers.B |= (1 << 7);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xF9: // SET 7, C
+                                    {
+                                        Registers.C |= (1 << 7);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xFA: // SET 7, D
+                                    {
+                                        Registers.D |= (1 << 7);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xFB: // SET 7, E
+                                    {
+                                        Registers.E |= (1 << 7);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xFC: // SET 7, H
+                                    {
+                                        Registers.H |= (1 << 7);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xFD: // SET 7, L
+                                    {
+                                        Registers.L |= (1 << 7);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
+                                case 0xFE: // SET 7, (HL)
+                                    {
+                                        romData[Registers.HL] |= (1 << 7);
+
+                                        cycleCount += 16;
+                                    }
+                                    break;
+                                case 0xFF: // SET 7, A
+                                    {
+                                        Registers.A |= (1 << 7);
+
+                                        cycleCount += 8;
+                                    }
+                                    break;
                             }
                         }
                         break;
