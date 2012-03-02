@@ -218,6 +218,13 @@ namespace GameboyEmulator
                             cycleCount += 4;
                         }
                         break;
+                    case 0x18: // JR n
+                        {
+                            Registers.PC += GetByteAtProgramCounter();
+
+                            cycleCount += 8;
+                        }
+                        break;
                     case 0x19: // ADD HL,DE
                         {
                             Registers.NFlag = false;
@@ -279,6 +286,15 @@ namespace GameboyEmulator
                             Registers.CFlag = bit0;
 
                             cycleCount += 4;
+                        }
+                        break;
+                    case 0x20: // JR NZ, n
+                        {
+                            if (!Registers.ZFlag)
+                            {
+                                Registers.PC += GetByteAtProgramCounter();
+                            }
+                            cycleCount += 8;
                         }
                         break;
                     case 0x21: // LD HL,nn
@@ -391,6 +407,15 @@ namespace GameboyEmulator
                             cycleCount += 4;
                         }
                         break;
+                    case 0x28: // JR Z, n
+                        {
+                            if (Registers.ZFlag)
+                            {
+                                Registers.PC += GetByteAtProgramCounter();
+                            }
+                            cycleCount += 8;
+                        }
+                        break;
                     case 0x29: // ADD HL,HL
                         {
                             Registers.NFlag = false;
@@ -450,6 +475,15 @@ namespace GameboyEmulator
                             cycleCount += 4;
                         }
                         break;
+                    case 0x30: // JR NC, n
+                        {
+                            if (!Registers.CFlag)
+                            {
+                                Registers.PC += GetByteAtProgramCounter();
+                            }
+                            cycleCount += 8;
+                        }
+                        break;
                     case 0x31: // LD SP,nn
                         Registers.SP = GetUShortAtProgramCounter();
                         cycleCount += 12;
@@ -503,6 +537,15 @@ namespace GameboyEmulator
                             Registers.HFlag = false;
 
                             cycleCount += 4;
+                        }
+                        break;
+                    case 0x38: // JR C, n
+                        {
+                            if (Registers.CFlag)
+                            {
+                                Registers.PC += GetByteAtProgramCounter();
+                            }
+                            cycleCount += 8;
                         }
                         break;
                     case 0x39: // ADD HL,SP
@@ -1610,7 +1653,7 @@ namespace GameboyEmulator
                             {
                                 Registers.PC = GetUShortAtProgramCounter();
                             }
-                            
+
                             cycleCount += 12;
                         }
                         break;
@@ -4124,6 +4167,12 @@ namespace GameboyEmulator
                             Registers.SP += value;
 
                             cycleCount += 16; // TODO: check if this should be 8 instead
+                        }
+                        break;
+                    case 0xE9: // JP (HL)
+                        {
+                            Registers.PC = romData[Registers.HL];
+                            cycleCount += 4;
                         }
                         break;
                     case 0xEA: // LD (NN),A
