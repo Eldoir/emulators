@@ -1604,6 +1604,23 @@ namespace GameboyEmulator
                         Registers.C = romData[Registers.SP++];
                         cycleCount += 12;
                         break;
+                    case 0xC2: // JP NZ, nn
+                        {
+                            if (!Registers.ZFlag)
+                            {
+                                Registers.PC = GetUShortAtProgramCounter();
+                            }
+                            
+                            cycleCount += 12;
+                        }
+                        break;
+                    case 0xC3: // JP nn
+                        {
+                            Registers.PC = GetUShortAtProgramCounter();
+
+                            cycleCount += 12;
+                            break;
+                        }
                     case 0xC5: // PUSH BC
                         romData[--Registers.SP] = Registers.B;
                         romData[--Registers.SP] = Registers.C;
@@ -1622,6 +1639,16 @@ namespace GameboyEmulator
                             Registers.A = temp;
 
                             cycleCount += 8;
+                        }
+                        break;
+                    case 0xCA: // JP Z, nn
+                        {
+                            if (Registers.ZFlag)
+                            {
+                                Registers.PC = GetUShortAtProgramCounter();
+                            }
+
+                            cycleCount += 12;
                         }
                         break;
                     case 0xCB:
@@ -3100,7 +3127,7 @@ namespace GameboyEmulator
                                     break;
                                 case 0x80: // RES 0, B
                                     {
-                                        Registers.B = ( byte ) ( Registers.B & ~( 1 << 0 ) );
+                                        Registers.B = (byte)(Registers.B & ~(1 << 0));
 
                                         cycleCount += 8;
                                     }
@@ -4017,6 +4044,16 @@ namespace GameboyEmulator
                         Registers.E = romData[Registers.SP++];
                         cycleCount += 12;
                         break;
+                    case 0xD2: // JP NC, nn
+                        {
+                            if (!Registers.CFlag)
+                            {
+                                Registers.PC = GetUShortAtProgramCounter();
+                            }
+
+                            cycleCount += 12;
+                        }
+                        break;
                     case 0xD5: // PUSH DE
                         romData[--Registers.SP] = Registers.D;
                         romData[--Registers.SP] = Registers.E;
@@ -4035,6 +4072,16 @@ namespace GameboyEmulator
                             Registers.A = temp;
 
                             cycleCount += 8;
+                        }
+                        break;
+                    case 0xDA: // JP C, nn
+                        {
+                            if (!Registers.CFlag)
+                            {
+                                Registers.PC = GetUShortAtProgramCounter();
+                            }
+
+                            cycleCount += 12;
                         }
                         break;
                     case 0xE0: // LDH (n),A
