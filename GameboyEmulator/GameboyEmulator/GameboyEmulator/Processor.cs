@@ -1642,10 +1642,22 @@ namespace GameboyEmulator
                             cycleCount += 4;
                         }
                         break;
+                    case 0xC0: // RET NZ
+                        {
+                            if (!Registers.ZFlag)
+                            {
+                                RET();
+                            }
+                            cycleCount += 8;
+                        }
+                        break;
                     case 0xC1: // POP BC
-                        Registers.B = romData[Registers.SP++];
-                        Registers.C = romData[Registers.SP++];
-                        cycleCount += 12;
+                        {
+                            Registers.B = romData[Registers.SP++];
+                            Registers.C = romData[Registers.SP++];
+                            cycleCount += 12;
+                        }
+
                         break;
                     case 0xC2: // JP NZ, nn
                         {
@@ -1702,11 +1714,18 @@ namespace GameboyEmulator
                             cycleCount += 32;
                         }
                         break;
+                    case 0xC8: // RET Z
+                        {
+                            if (Registers.ZFlag)
+                            {
+                                RET();
+                            }
+                            cycleCount += 8;
+                        }
+                        break;
                     case 0xC9: // RET
                         {
-                            var nextOpcode = ( ushort )( ( romData[ Registers.SP++ ] ) | ( romData[ Registers.SP++ ] << 8 ) );
-                            
-                            Registers.PC = nextOpcode;
+                            RET();
 
                             cycleCount += 8;
                         }
@@ -4132,6 +4151,15 @@ namespace GameboyEmulator
                             cycleCount += 32;
                         }
                         break;
+                    case 0xD0: // RET NC
+                        {
+                            if (!Registers.CFlag)
+                            {
+                                RET();
+                            }
+                            cycleCount += 8;
+                        }
+                        break;
                     case 0xD1: // POP DE
                         Registers.D = romData[Registers.SP++];
                         Registers.E = romData[Registers.SP++];
@@ -4181,6 +4209,23 @@ namespace GameboyEmulator
                         {
                             RST_n(0x10);
                             cycleCount += 32;
+                        }
+                        break;
+                    case 0xD8: // RET C
+                        {
+                            if (Registers.CFlag)
+                            {
+                                RET();
+                            }
+                            cycleCount += 8;
+                        }
+                        break;
+                    case 0xD9: // RETI
+                        {
+                            RET();
+                            EI();
+                            
+                            cycleCount += 8;
                         }
                         break;
                     case 0xDA: // JP C, nn
@@ -4342,8 +4387,10 @@ namespace GameboyEmulator
                         cycleCount += 16;
                         break;
                     case 0xFB: // EI
-                        mustEnableInterrupts = true;
-                        cycleCount += 4;
+                        {
+                            EI();
+                            cycleCount += 4;
+                        }
                         break;
                     case 0xFE: // CP #
                         {
@@ -4379,6 +4426,18 @@ namespace GameboyEmulator
                     mustEnableInterrupts = mustDisableInterrupts = false;
                 }
             } while ( cycleCount <= 70224 );
+        }
+
+        private void EI()
+        {
+            mustEnableInterrupts = true;
+        }
+
+        private void RET()
+        {
+            var nextOpcode = ( ushort ) ( ( romData[ Registers.SP++ ] ) | ( romData[ Registers.SP++ ] << 8 ) );
+
+            Registers.PC = nextOpcode;
         }
 
         private void RST_n( ushort offset )
