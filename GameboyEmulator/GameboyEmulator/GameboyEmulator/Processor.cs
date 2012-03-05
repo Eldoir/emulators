@@ -1668,7 +1668,7 @@ namespace GameboyEmulator
                         {
                             if (!Registers.ZFlag)
                             {
-                                Call_nn();
+                                CALL_nn();
                             }
 
                             cycleCount += 12;
@@ -1692,6 +1692,21 @@ namespace GameboyEmulator
                             Registers.CFlag = HasCarry(Registers.A, regValue);
 
                             Registers.A = temp;
+
+                            cycleCount += 8;
+                        }
+                        break;
+                    case 0xC7: // RST 00H
+                        {
+                            RST_n(0x00);
+                            cycleCount += 32;
+                        }
+                        break;
+                    case 0xC9: // RET
+                        {
+                            var nextOpcode = ( ushort )( ( romData[ Registers.SP++ ] ) | ( romData[ Registers.SP++ ] << 8 ) );
+                            
+                            Registers.PC = nextOpcode;
 
                             cycleCount += 8;
                         }
@@ -4083,7 +4098,7 @@ namespace GameboyEmulator
                         {
                             if (Registers.ZFlag)
                             {
-                                Call_nn();
+                                CALL_nn();
                             }
 
                             cycleCount += 12;
@@ -4091,7 +4106,7 @@ namespace GameboyEmulator
                         break;
                     case 0xCD: // CALL nn
                         {
-                            Call_nn();
+                            CALL_nn();
 
                             cycleCount += 12;
                         }
@@ -4109,6 +4124,12 @@ namespace GameboyEmulator
                             Registers.A = temp;
 
                             cycleCount += 8;
+                        }
+                        break;
+                    case 0xCF: // RST 08H
+                        {
+                            RST_n(0x08);
+                            cycleCount += 32;
                         }
                         break;
                     case 0xD1: // POP DE
@@ -4130,7 +4151,7 @@ namespace GameboyEmulator
                         {
                             if (!Registers.CFlag)
                             {
-                                Call_nn();
+                                CALL_nn();
                             }
 
                             cycleCount += 12;
@@ -4156,6 +4177,12 @@ namespace GameboyEmulator
                             cycleCount += 8;
                         }
                         break;
+                    case 0xD7: // RST 10H
+                        {
+                            RST_n(0x10);
+                            cycleCount += 32;
+                        }
+                        break;
                     case 0xDA: // JP C, nn
                         {
                             if (!Registers.CFlag)
@@ -4170,10 +4197,16 @@ namespace GameboyEmulator
                         {
                             if (Registers.CFlag)
                             {
-                                Call_nn();
+                                CALL_nn();
                             }
 
                             cycleCount += 12;
+                        }
+                        break;
+                    case 0xDF: // RST 18H
+                        {
+                            RST_n(0x18);
+                            cycleCount += 32;
                         }
                         break;
                     case 0xE0: // LDH (n),A
@@ -4203,6 +4236,12 @@ namespace GameboyEmulator
                         Registers.CFlag = false;
 
                         cycleCount += 8;
+                        break;
+                    case 0xE7: // RST 20H
+                        {
+                            RST_n(0x20);
+                            cycleCount += 32;
+                        }
                         break;
                     case 0xE8: // ADD SP,n
                         {
@@ -4238,6 +4277,12 @@ namespace GameboyEmulator
 
                         cycleCount += 4;
                         break;
+                    case 0xEF: // RST 28H
+                        {
+                            RST_n(0x28);
+                            cycleCount += 32;
+                        }
+                        break;
                     case 0xF0: // LDH A,(n)
                         Registers.A = romData[0xFF00 + GetByteAtProgramCounter()];
                         cycleCount += 12;
@@ -4269,6 +4314,12 @@ namespace GameboyEmulator
                         Registers.CFlag = false;
 
                         cycleCount += 8;
+                        break;
+                    case 0xF7: // RST 30H
+                        {
+                            RST_n(0x30);
+                            cycleCount += 32;
+                        }
                         break;
                     case 0xF8: // LD HL,SP+n / LDHL SP,n
                         var n = romData[GetByteAtProgramCounter()];
@@ -4306,6 +4357,12 @@ namespace GameboyEmulator
                             cycleCount += 8;
                         }
                         break;
+                    case 0xFF: // RST 38H
+                        {
+                            RST_n(0x38);
+                            cycleCount += 32;
+                        }
+                        break;
                 }
 
                 if (setInterruptsAfterInstruction)
@@ -4324,10 +4381,18 @@ namespace GameboyEmulator
             } while ( cycleCount <= 70224 );
         }
 
-        private void Call_nn()
+        private void RST_n( ushort offset )
         {
-            romData[ --Registers.SP ] = ( byte ) ( Registers.PC >> 8 );
-            romData[ --Registers.SP ] = ( byte ) ( Registers.PC );
+            romData[ --Registers.SP ] = ( byte ) ( ( Registers.PC & 0xFF00 ) >> 8 );
+            romData[ --Registers.SP ] = ( byte ) ( ( Registers.PC & 0X00FF ) );
+
+            Registers.PC = ( ushort ) ( 0x0000 + offset );
+        }
+
+        private void CALL_nn()
+        {
+            romData[ --Registers.SP ] = ( byte ) ( ( ( Registers.PC + 3 ) & 0xFF00 ) >> 8 );
+            romData[ --Registers.SP ] = ( byte ) ( ( ( Registers.PC + 3 ) & 0X00FF ) );
 
             var nextOpCode = GetUShortAtProgramCounter();
             Registers.PC = nextOpCode;
