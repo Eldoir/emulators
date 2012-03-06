@@ -7,16 +7,17 @@ namespace GameboyEmulator
 {
     public class Emulator
     {
-        private Processor processor = new Processor();
+        private Processor processor;
+        private Memory memory;
         
         public void Load( byte[] rom )
         {
-            processor.Reset();
-
-            SetGameName(rom );
+            memory = new Memory( rom );
             
-            processor.LoadROM(rom);
+            processor = new Processor( memory );
 
+            memory.Initialize();
+            
             EmulateFrame();
         }
 
@@ -30,15 +31,6 @@ namespace GameboyEmulator
             processor.Reset();
         }
 
-        private void SetGameName( byte[] rom )
-        {
-            byte[] gameNameBytes = new byte[16];
-
-            Array.Copy(rom, 0x134, gameNameBytes, 0, 16);
-
-            GameName = System.Text.Encoding.ASCII.GetString(gameNameBytes);
-        }
-
-        public string GameName { get; private set; }
+        public string GameName { get { return memory.GameName; } }
     }
 }
