@@ -7,12 +7,38 @@ namespace GameboyEmulator
 {
     public class CPURegisters
     {
-        public void Reset()
+        private readonly Cartridge cartridge;
+
+        public CPURegisters( Cartridge cartridge )
         {
+            this.cartridge = cartridge;
+        }
+
+        public void Initialize()
+        {
+            if ( cartridge.GameBoyType == GameBoyType.GameBoy
+                || cartridge.GameBoyType == GameBoyType.SuperGameBoy )
+            {
+                AF = 0x01;
+            }
+            else if ( cartridge.GameBoyType == GameBoyType.GameBoyPocket )
+            {
+                AF = 0xFF;
+            }
+            else
+            {
+                AF = 0x11;
+            }
+
+            F = 0xB0;
+            BC = 0x0013;
+            DE = 0x00D8;
+            HL = 0x014D;
+
             PC = 0x100;
             SP = 0xFFFE;
         }
-
+        
         public byte A { get; set; }
         public byte F { get; set; }
         public byte B { get; set; }

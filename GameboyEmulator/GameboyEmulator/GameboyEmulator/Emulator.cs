@@ -7,17 +7,29 @@ namespace GameboyEmulator
 {
     public class Emulator
     {
-        private Processor processor;
+        private Cartridge cartridge;
         private Memory memory;
-        
+        private Processor processor;
+        private GPU gpu;
+        private CPURegisters registers;
+        private Clock clock;
+
         public void Load( byte[] rom )
         {
-            memory = new Memory( rom );
+            cartridge = new Cartridge(rom); 
             
-            processor = new Processor( memory );
+            clock = new Clock();
+            
+            registers = new CPURegisters( cartridge );
+            gpu = new GPU( registers, clock );
+
+            memory = new Memory( cartridge, gpu);
+
+            processor = new Processor( memory, registers, gpu, clock );
 
             memory.Initialize();
-            
+            processor.Initialize();
+
             EmulateFrame();
         }
 
@@ -26,11 +38,6 @@ namespace GameboyEmulator
             processor.EmulateFrame();
         }
 
-        public void Reset()
-        {
-            processor.Reset();
-        }
-
-        public string GameName { get { return memory.GameName; } }
+        public string GameName { get { return cartridge.GameName; } }
     }
 }

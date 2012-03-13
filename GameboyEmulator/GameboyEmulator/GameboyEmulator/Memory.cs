@@ -1,184 +1,190 @@
-﻿using System;
-
-namespace GameboyEmulator
+﻿namespace GameboyEmulator
 {
     public class Memory
     {
-        private readonly byte[] romData;
+        private const int cartridgeMemoryEndOffset = 0x8000;
+        private const int videoRAMEndOffset = 0xA000;
+        private const int switchableRAMBankEndOffset = 0xC000;
+        private const int internalRAMEndOffset = 0xE000;
+        private const int echoInternalRAMEndOffset = 0xFE00;
+        private const int spriteMemoryEndOffset = 0xFEA0;
+        private const int emptyExceptIOEndOffset = 0xFF00;
+        private const int ioPortsEndOffset = 0xFF4C;
+        private const int emptyExceptIOBisEndOffset = 0xFF80;
+        private const int internalRAMBisEndOffset = 0xFFFF;
+        private const int interruptEnableRegisterOffset = 0xFFFF;
 
-        private static readonly byte[] nintendoLogo = new byte[]
-                                                          {
-                                                              0xCE, 0xED, 0x66, 0x66, 0xCC, 0x0D, 0x00, 0x0B, 0x03, 0x73, 0x00, 0x83, 0x00, 0x0C, 0x00, 0x0D,
-                                                              0x00, 0x08, 0x11, 0x1F, 0x88, 0x89, 0x00, 0x0E, 0xDC, 0xCC, 0x6E, 0xE6, 0xDD, 0xDD, 0xD9, 0x99,
-                                                              0xBB, 0xBB, 0x67, 0x63, 0x6E, 0x0E, 0xEC, 0xCC, 0xDD, 0xDC, 0x99, 0x9F, 0xBB, 0xB9, 0x33, 0x3E
-                                                          };
-        private const int nintendoLogoOffset = 0x104;
-        private const int gameNameOffset = 0x134;
-        private const int gameNameLength = 0xF;
-        private const int isGameBoyColorOffset = 0x143;
-        private const int isSuperGameBoyOffset = 0x146;
-        private const int cartridgeTypeOffset = 0x147;
-        private const int romSizeOffset = 0x148;
-        private const int ramSizeOffset = 0x149;
-        
-        private const int romBankSize = 0x10;
+        private readonly Cartridge cartridge;
+        private readonly GPU gpu;
 
-        public Memory( byte[] romData )
+        //private readonly byte[] videoRAMData = new byte[0x2000];
+        private readonly byte[] switchableRAMBankData = new byte[0x2000];
+        private readonly byte[] internalRAMData = new byte[0x2000];
+        private readonly byte[] spriteData = new byte[0xA0];
+        private readonly byte[] emptyButIOData = new byte[0x60];
+        private readonly byte[] ioPortsData = new byte[0x4C];
+        private readonly byte[] emptyButIOBisData = new byte[0x34];
+        private readonly byte[] internalRAMBisData = new byte[0x7F];
+
+        private byte interruptEnableRegister;
+
+        public Memory( Cartridge cartridge, GPU gpu )
         {
-            this.romData = new byte[romData.Length];
-
-            Array.Copy( romData, this.romData, romData.Length );
+            this.cartridge = cartridge;
+            this.gpu = gpu;
         }
-
-        public byte this[ int offset ]
-        {
-            get { return romData[ offset ]; }
-            set { romData[ offset ] = value; }
-        }
-
-        public string GameName { get; private set; }
-        public GameBoyType GameBoyType { get; private set; }
-        public int ROMSize { get; private set; }
-        public int ROMBankCount { get; private set; }
-        public int RAMSize { get; private set; }
-        public int RAMBankCount { get; private set; }
 
         public void Initialize()
         {
-            CheckNintendoLogo();
-            SetGameName();
-            SetHardware();
-        }
+            cartridge.Initialize();
 
-        private void SetHardware()
-        {
-            SetGameBoyType();
-            SetCartridgeType();
-            SetROMSize();
-            SetRAMSize();
+            this[ 0xFF05 ] = 0x00; //TIMA
+            this[ 0xFF06 ] = 0x00; //TMA
+            this[ 0xFF07 ] = 0x00; //TAC
+            this[ 0xFF10 ] = 0x80; //NR10
+            this[ 0xFF11 ] = 0xBF; //NR11
+            this[ 0xFF12 ] = 0xF3; //NR12
+            this[ 0xFF14 ] = 0xBF; //NR14
+            this[ 0xFF16 ] = 0x3F; //NR21
+            this[ 0xFF17 ] = 0x00; //NR22
+            this[ 0xFF19 ] = 0xBF; //NR24
+            this[ 0xFF1A ] = 0x7F; //NR30
+            this[ 0xFF1B ] = 0xFF; //NR31
+            this[ 0xFF1C ] = 0x9F; //NR32
+            this[ 0xFF1E ] = 0xBF; //NR33
+            this[ 0xFF20 ] = 0xFF; //NR41
+            this[ 0xFF21 ] = 0x00; //NR42
+            this[ 0xFF22 ] = 0x00; //NR43
+            this[ 0xFF23 ] = 0xBF; //NR30
+            this[ 0xFF24 ] = 0x77; //NR50
+            this[ 0xFF25 ] = 0xF3; //NR51
             
-
-            Console.WriteLine( romData[ cartridgeTypeOffset ] );
-        }
-
-        private void SetRAMSize()
-        {
-            switch ( romData[ ramSizeOffset ] )
+            if ( cartridge.GameBoyType == GameBoyType.SuperGameBoy )
             {
-                case 0:
-                    RAMBankCount = 0;
-                    RAMSize = 0;
-                    break;
-                case 1:
-                    RAMBankCount = 1;
-                    RAMSize = 2;
-                    break;
-                case 2:
-                    RAMBankCount = 1;
-                    RAMSize = 8;
-                    break;
-                case 3:
-                    RAMBankCount = 4;
-                    RAMSize = 32;
-                    break;
-                case 4:
-                    RAMBankCount = 16;
-                    RAMSize = 128;
-                    break;
-            }
-        }
-
-        private void SetROMSize()
-        {
-            switch ( romData[romSizeOffset] )
-            {
-                case 0:
-                    ROMSize = 32;
-                    ROMBankCount = 2;
-                    break;
-                case 1:
-                    ROMSize = 64;
-                    ROMBankCount = 4;
-                    break;
-                case 2:
-                    ROMSize = 128;
-                    ROMBankCount = 8;
-                    break;
-                case 3:
-                    ROMSize = 256;
-                    ROMBankCount = 16;
-                    break;
-                case 4:
-                    ROMSize = 512;
-                    ROMBankCount = 32;
-                    break;
-                case 5:
-                    ROMSize = 1024;
-                    ROMBankCount = 64;
-                    break;
-                case 6:
-                    ROMSize = 2048;
-                    ROMBankCount = 128;
-                    break;
-                case 0x52:
-                    ROMSize = 1152;
-                    ROMBankCount = 72;
-                    break;
-                case 0x53:
-                    ROMSize = 1280;
-                    ROMBankCount = 80;
-                    break;
-                case 0x54:
-                    ROMSize = 1536;
-                    ROMBankCount = 96;
-                    break;
-            }
-
-            ROMSize = ROMBankCount * romBankSize;
-        }
-
-        private void SetCartridgeType()
-        {
-            switch (romData[cartridgeTypeOffset])
-            {
-                case 0:
-
-                    break;
-            }
-        }
-
-        private void SetGameBoyType()
-        {
-            if ( romData[ isGameBoyColorOffset ] == 0x80 )
-            {
-                GameBoyType = GameBoyType.GameBoyColor;
-            }
-            else if ( romData[ isSuperGameBoyOffset ] == 0x03 )
-            {
-                GameBoyType = GameBoyType.SuperGameBoy;
+                this[0xFF26] = 0xF0; // NR52
             }
             else
             {
-                GameBoyType = GameBoyType.GameBoy;
+                this[0xFF26] = 0xF1; //NR52
             }
+            
+            this[ 0xFF40 ] = 0x91; //LCDC
+            this[ 0xFF42 ] = 0x00; //SCY
+            this[ 0xFF43 ] = 0x00; //SCX
+            this[ 0xFF45 ] = 0x00; //LYC
+            this[ 0xFF47 ] = 0xFC; //BGP
+            this[ 0xFF48 ] = 0xFF; //OBP0
+            this[ 0xFF49 ] = 0xFF; //OBP1
+            this[ 0xFF4A ] = 0x00; //WY
+            this[ 0xFF4B ] = 0x00; //WX
+            this[ 0xFFFF ] = 0x00; //IE
         }
 
-        private void SetGameName()
+        public Cartridge Cartridge
         {
-            var gameNameBytes = new byte[gameNameLength];
-
-            Array.Copy(romData, gameNameOffset, gameNameBytes, 0, gameNameLength);
-
-            GameName = System.Text.Encoding.ASCII.GetString(gameNameBytes);
+            get { return cartridge; }
         }
 
-        private void CheckNintendoLogo()
+        public byte this[ushort offset]
         {
-            for (int x = nintendoLogoOffset, y = 0; y < nintendoLogo.Length; x++, y++)
+            get
             {
-                if (nintendoLogo[y] != romData[x])
+                if (offset >= 0x0000 && offset < cartridgeMemoryEndOffset)
                 {
-                    throw new Exception( "The validation of the Nintendo logo has failed" );
+                    return cartridge[offset];
+                }
+                if (offset >= cartridgeMemoryEndOffset && offset < videoRAMEndOffset)
+                {
+                    return gpu.ReadFromRAM( offset - cartridgeMemoryEndOffset);
+                }
+                if (offset >= videoRAMEndOffset && offset < switchableRAMBankEndOffset)
+                {
+                    return switchableRAMBankData[offset - videoRAMEndOffset];
+                }
+                if (offset >= switchableRAMBankEndOffset && offset < internalRAMEndOffset)
+                {
+                    return internalRAMData[offset - switchableRAMBankEndOffset];
+                }
+                if (offset >= internalRAMEndOffset && offset < echoInternalRAMEndOffset)
+                {
+                    return internalRAMData[offset - internalRAMEndOffset];
+                }
+                if (offset >= echoInternalRAMEndOffset && offset < spriteMemoryEndOffset)
+                {
+                    return spriteData[offset - echoInternalRAMEndOffset];
+                }
+                if (offset >= spriteMemoryEndOffset && offset < emptyExceptIOEndOffset)
+                {
+                    return emptyButIOData[offset - spriteMemoryEndOffset];
+                }
+                if (offset >= emptyExceptIOEndOffset && offset < ioPortsEndOffset)
+                {
+                    return ioPortsData[offset - emptyExceptIOEndOffset];
+                }
+                if (offset >= ioPortsEndOffset && offset < emptyExceptIOBisEndOffset)
+                {
+                    return emptyButIOBisData[offset - ioPortsEndOffset];
+                }
+                if (offset >= emptyExceptIOBisEndOffset && offset < internalRAMBisEndOffset)
+                {
+                    return internalRAMBisData[offset - emptyExceptIOBisEndOffset];
+                }
+                if (offset >= internalRAMBisEndOffset && offset < interruptEnableRegisterOffset)
+                {
+                    return internalRAMBisData[offset - internalRAMBisEndOffset];
+                }
+
+                return interruptEnableRegister;
+            }
+            set
+            {
+                if ( offset >= 0x0000 && offset < cartridgeMemoryEndOffset )
+                {
+                    cartridge[offset] = value;
+                }
+                else if (offset >= cartridgeMemoryEndOffset && offset < videoRAMEndOffset)
+                {
+                    gpu.WriteInRAM( offset - cartridgeMemoryEndOffset, value );
+                }
+                else if (offset >= videoRAMEndOffset && offset < switchableRAMBankEndOffset)
+                {
+                    switchableRAMBankData[ offset - videoRAMEndOffset ] = value;
+                }
+                else if (offset >= switchableRAMBankEndOffset && offset < internalRAMEndOffset)
+                {
+                    internalRAMData[ offset - switchableRAMBankEndOffset ] = value;
+                }
+                else if (offset >= internalRAMEndOffset && offset < echoInternalRAMEndOffset)
+                {
+                    internalRAMData[offset - internalRAMEndOffset] = value;
+                }
+                else if (offset >= echoInternalRAMEndOffset && offset < spriteMemoryEndOffset)
+                {
+                    spriteData[ offset - echoInternalRAMEndOffset ] = value;
+                }
+                else if (offset >= spriteMemoryEndOffset && offset < emptyExceptIOEndOffset)
+                {
+                    emptyButIOData[ offset - spriteMemoryEndOffset ] = value;
+                }
+                else if (offset >= emptyExceptIOEndOffset && offset < ioPortsEndOffset)
+                {
+                    ioPortsData[ offset - emptyExceptIOEndOffset ] = value;
+                }
+                else if (offset >= ioPortsEndOffset && offset < emptyExceptIOBisEndOffset)
+                {
+                    emptyButIOBisData[ offset - ioPortsEndOffset ] = value;
+                }
+                else if (offset >= emptyExceptIOBisEndOffset && offset < internalRAMBisEndOffset)
+                {
+                    internalRAMBisData[ offset - emptyExceptIOBisEndOffset ] = value;
+                }
+                else if (offset >= internalRAMBisEndOffset && offset < interruptEnableRegisterOffset)
+                {
+                    internalRAMBisData[ offset - internalRAMBisEndOffset ] = value;
+                }
+                else if (offset == interruptEnableRegisterOffset)
+                {
+                    interruptEnableRegister = value;
                 }
             }
         }
