@@ -2,24 +2,14 @@
 {
     public class Memory
     {
-        private const int cartridgeMemoryEndOffset = 0x8000;
-        private const int videoRAMEndOffset = 0xA000;
-        private const int switchableRAMBankEndOffset = 0xC000;
-        private const int internalRAMEndOffset = 0xE000;
-        private const int echoInternalRAMEndOffset = 0xFE00;
-        private const int spriteMemoryEndOffset = 0xFEA0;
-        private const int emptyExceptIOEndOffset = 0xFF00;
-        private const int ioPortsEndOffset = 0xFF4C;
-        private const int emptyExceptIOBisEndOffset = 0xFF80;
-        private const int internalRAMBisEndOffset = 0xFFFF;
-        private const int interruptEnableRegisterOffset = 0xFFFF;
-
         private readonly Cartridge cartridge;
         private readonly GPU gpu;
+        private readonly CPURegisters cpuRegisters;
+        private readonly GPURegisters gpuRegisters;
 
         //private readonly byte[] videoRAMData = new byte[0x2000];
-        private readonly byte[] switchableRAMBankData = new byte[0x2000];
-        private readonly byte[] internalRAMData = new byte[0x2000];
+        private readonly byte[] cartridgeExternalRAMData = new byte[0x2000];
+        private readonly byte[] workingRAMData = new byte[0x2000];
         private readonly byte[] spriteData = new byte[0xA0];
         private readonly byte[] emptyButIOData = new byte[0x60];
         private readonly byte[] ioPortsData = new byte[0x4C];
@@ -27,11 +17,14 @@
         private readonly byte[] internalRAMBisData = new byte[0x7F];
 
         private byte interruptEnableRegister;
+        private bool inBIOS = true;
 
-        public Memory( Cartridge cartridge, GPU gpu )
+        public Memory( Cartridge cartridge, GPU gpu, CPURegisters cpuRegisters, GPURegisters gpuRegisters )
         {
             this.cartridge = cartridge;
             this.gpu = gpu;
+            this.cpuRegisters = cpuRegisters;
+            this.gpuRegisters = gpuRegisters;
         }
 
         public void Initialize()
@@ -67,16 +60,16 @@
             {
                 this[0xFF26] = 0xF1; //NR52
             }
-            
-            this[ 0xFF40 ] = 0x91; //LCDC
-            this[ 0xFF42 ] = 0x00; //SCY
-            this[ 0xFF43 ] = 0x00; //SCX
-            this[ 0xFF45 ] = 0x00; //LYC
-            this[ 0xFF47 ] = 0xFC; //BGP
-            this[ 0xFF48 ] = 0xFF; //OBP0
-            this[ 0xFF49 ] = 0xFF; //OBP1
-            this[ 0xFF4A ] = 0x00; //WY
-            this[ 0xFF4B ] = 0x00; //WX
+
+            this[0xFF40] = 0x91; //LCDC
+            this[0xFF42] = 0x00; //SCY
+            this[0xFF43] = 0x00; //SCX
+            this[0xFF45] = 0x00; //LYC
+            this[0xFF47] = 0xFC; //BGP
+            this[0xFF48] = 0xFF; //OBP0
+            this[0xFF49] = 0xFF; //OBP1
+            this[0xFF4A] = 0x00; //WY
+            this[0xFF4B] = 0x00; //WX
             this[ 0xFFFF ] = 0x00; //IE
         }
 
@@ -89,103 +82,221 @@
         {
             get
             {
-                if (offset >= 0x0000 && offset < cartridgeMemoryEndOffset)
+                switch (offset & 0xF000)
                 {
-                    return cartridge[offset];
-                }
-                if (offset >= cartridgeMemoryEndOffset && offset < videoRAMEndOffset)
-                {
-                    return gpu.ReadFromRAM( offset - cartridgeMemoryEndOffset);
-                }
-                if (offset >= videoRAMEndOffset && offset < switchableRAMBankEndOffset)
-                {
-                    return switchableRAMBankData[offset - videoRAMEndOffset];
-                }
-                if (offset >= switchableRAMBankEndOffset && offset < internalRAMEndOffset)
-                {
-                    return internalRAMData[offset - switchableRAMBankEndOffset];
-                }
-                if (offset >= internalRAMEndOffset && offset < echoInternalRAMEndOffset)
-                {
-                    return internalRAMData[offset - internalRAMEndOffset];
-                }
-                if (offset >= echoInternalRAMEndOffset && offset < spriteMemoryEndOffset)
-                {
-                    return spriteData[offset - echoInternalRAMEndOffset];
-                }
-                if (offset >= spriteMemoryEndOffset && offset < emptyExceptIOEndOffset)
-                {
-                    return emptyButIOData[offset - spriteMemoryEndOffset];
-                }
-                if (offset >= emptyExceptIOEndOffset && offset < ioPortsEndOffset)
-                {
-                    return ioPortsData[offset - emptyExceptIOEndOffset];
-                }
-                if (offset >= ioPortsEndOffset && offset < emptyExceptIOBisEndOffset)
-                {
-                    return emptyButIOBisData[offset - ioPortsEndOffset];
-                }
-                if (offset >= emptyExceptIOBisEndOffset && offset < internalRAMBisEndOffset)
-                {
-                    return internalRAMBisData[offset - emptyExceptIOBisEndOffset];
-                }
-                if (offset >= internalRAMBisEndOffset && offset < interruptEnableRegisterOffset)
-                {
-                    return internalRAMBisData[offset - internalRAMBisEndOffset];
+                    // BIOS
+                    case 0x0000:
+                        if (inBIOS)
+                        {
+                            if (offset < 0x0100)
+                                return cartridge[offset];
+                            if( cpuRegisters.PC == 0x0100)
+                                inBIOS = false;
+                        }
+
+                        return cartridge[offset];
+
+                        // ROM 0
+                    case 0x1000:
+                    case 0x2000:
+                    case 0x3000:
+                            return cartridge[offset];
+
+                    // ROM1 (unbanked) (16k)
+                    case 0x4000:
+                    case 0x5000:
+                    case 0x6000:
+                    case 0x7000:
+                            return cartridge[offset];
+
+                    // Graphics: VRAM (8k)
+                    case 0x8000:
+                    case 0x9000:
+                        return gpu.ReadFromRAM( offset - 0x8000 );
+
+                    // External RAM (8k)
+                    case 0xA000:
+                    case 0xB000:
+                        return cartridgeExternalRAMData[offset - 0xA000];
+
+                    // Working RAM (8k)
+                    case 0xC000:
+                    case 0xD000:
+                        return workingRAMData[ offset - 0xC000 ];
+
+                    // Working RAM shadow
+                    case 0xE000:
+                        return workingRAMData[offset - 0xE000];
+
+                    // Working RAM shadow, I/O, Zero-page RAM
+                    case 0xF000:
+                        switch (offset & 0x0F00)
+                        {
+                            // Working RAM shadow
+                            case 0x000:
+                            case 0x100:
+                            case 0x200:
+                            case 0x300:
+                            case 0x400:
+                            case 0x500:
+                            case 0x600:
+                            case 0x700:
+                            case 0x800:
+                            case 0x900:
+                            case 0xA00:
+                            case 0xB00:
+                            case 0xC00:
+                            case 0xD00:
+                                return workingRAMData[offset - 0xF000];
+
+                            // Graphics: object attribute memory
+                            // OAM is 160 bytes, remaining bytes read as 0
+                            case 0xE00:
+                                if (offset < 0xFEA0)
+                                    return gpu.ReadFromOAM(offset - 0xFE00);
+                                else
+                                    return 0;
+
+                            // Zero-page
+                            case 0xF00:
+                                if (offset >= 0xFF80 && offset < 0xFFFF )
+                                {
+                                    return gpu.ReadFromZeroPageRAM(offset - 0xFF80);
+                                }
+                                
+                                // I/O control handling
+
+                                switch ( offset & 0x00F0 )
+                                {
+                                    // GPU (64 registers)
+                                    case 0x40:
+                                    case 0x50:
+                                    case 0x60:
+                                    case 0x70:
+                                        return gpuRegisters.Read( offset );
+                                }
+                                break;
+                        }
+                        break;
                 }
 
                 return interruptEnableRegister;
             }
             set
             {
-                if ( offset >= 0x0000 && offset < cartridgeMemoryEndOffset )
+                switch (offset & 0xF000)
                 {
-                    cartridge[offset] = value;
+                    // BIOS
+                    case 0x0000:
+                        if (inBIOS)
+                        {
+                            if (offset < 0x0100)
+                                cartridge[offset] = value;
+                            if (cpuRegisters.PC == 0x0100)
+                                inBIOS = false;
+                        }
+
+                        cartridge[offset] = value;
+                        break;
+
+                    // ROM 0
+                    case 0x1000:
+                    case 0x2000:
+                    case 0x3000:
+                        cartridge[offset] = value;
+                        break;
+
+                    // ROM1 (unbanked) (16k)
+                    case 0x4000:
+                    case 0x5000:
+                    case 0x6000:
+                    case 0x7000:
+                        cartridge[offset] = value;
+                        break;
+
+                    // Graphics: VRAM (8k)
+                    case 0x8000:
+                    case 0x9000:
+                        gpu.WriteInRAM( offset - 0x8000, value );
+                        break;
+
+                    // External RAM (8k)
+                    case 0xA000:
+                    case 0xB000:
+                        cartridgeExternalRAMData[ offset - 0xA000 ] = value;
+                        break;
+
+                    // Working RAM (8k)
+                    case 0xC000:
+                    case 0xD000:
+                        workingRAMData[offset - 0xC000] = value;
+                        break;
+
+                    // Working RAM shadow
+                    case 0xE000:
+                        workingRAMData[offset - 0xE000] = value;
+                        break;
+
+                    // Working RAM shadow, I/O, Zero-page RAM
+                    case 0xF000:
+                        switch (offset & 0x0F00)
+                        {
+                            // Working RAM shadow
+                            case 0x000:
+                            case 0x100:
+                            case 0x200:
+                            case 0x300:
+                            case 0x400:
+                            case 0x500:
+                            case 0x600:
+                            case 0x700:
+                            case 0x800:
+                            case 0x900:
+                            case 0xA00:
+                            case 0xB00:
+                            case 0xC00:
+                            case 0xD00:
+                                workingRAMData[offset - 0xF000] = value;
+                                break;
+
+                            // Graphics: object attribute memory
+                            // OAM is 160 bytes, remaining bytes read as 0
+                            case 0xE00:
+                                if (offset < 0xFEA0)
+                                    gpu.WriteToOAM( offset - 0xFE00, value );
+                                else
+                                {    
+                                }
+                                break;
+                            // Zero-page
+                            case 0xF00:
+                            {
+                                if (offset >= 0xFF80 && offset < 0xFFFF)
+                                {
+                                    gpu.WriteToZeroPageRAM(offset - 0xFF80, value);
+                                }
+                                else
+                                {
+                                    // I/O control handling
+
+                                    switch ( offset & 0x00F0 )
+                                    {
+                                        // GPU (64 registers)
+                                        case 0x40:
+                                        case 0x50:
+                                        case 0x60:
+                                        case 0x70:
+                                            gpuRegisters.Write( offset, value );
+                                            break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        break;
                 }
-                else if (offset >= cartridgeMemoryEndOffset && offset < videoRAMEndOffset)
-                {
-                    gpu.WriteInRAM( offset - cartridgeMemoryEndOffset, value );
-                }
-                else if (offset >= videoRAMEndOffset && offset < switchableRAMBankEndOffset)
-                {
-                    switchableRAMBankData[ offset - videoRAMEndOffset ] = value;
-                }
-                else if (offset >= switchableRAMBankEndOffset && offset < internalRAMEndOffset)
-                {
-                    internalRAMData[ offset - switchableRAMBankEndOffset ] = value;
-                }
-                else if (offset >= internalRAMEndOffset && offset < echoInternalRAMEndOffset)
-                {
-                    internalRAMData[offset - internalRAMEndOffset] = value;
-                }
-                else if (offset >= echoInternalRAMEndOffset && offset < spriteMemoryEndOffset)
-                {
-                    spriteData[ offset - echoInternalRAMEndOffset ] = value;
-                }
-                else if (offset >= spriteMemoryEndOffset && offset < emptyExceptIOEndOffset)
-                {
-                    emptyButIOData[ offset - spriteMemoryEndOffset ] = value;
-                }
-                else if (offset >= emptyExceptIOEndOffset && offset < ioPortsEndOffset)
-                {
-                    ioPortsData[ offset - emptyExceptIOEndOffset ] = value;
-                }
-                else if (offset >= ioPortsEndOffset && offset < emptyExceptIOBisEndOffset)
-                {
-                    emptyButIOBisData[ offset - ioPortsEndOffset ] = value;
-                }
-                else if (offset >= emptyExceptIOBisEndOffset && offset < internalRAMBisEndOffset)
-                {
-                    internalRAMBisData[ offset - emptyExceptIOBisEndOffset ] = value;
-                }
-                else if (offset >= internalRAMBisEndOffset && offset < interruptEnableRegisterOffset)
-                {
-                    internalRAMBisData[ offset - internalRAMBisEndOffset ] = value;
-                }
-                else if (offset == interruptEnableRegisterOffset)
-                {
-                    interruptEnableRegister = value;
-                }
+
+                interruptEnableRegister = value;
             }
         }
     }

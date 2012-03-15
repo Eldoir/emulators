@@ -21,7 +21,6 @@ namespace GameboyEmulator
         private const int oamRadModeCycleDuration = 80;
         private const int vRadModeCycleDuration = 172;
 
-        private readonly CPURegisters registers;
         private readonly Clock clock;
         private readonly Clock cpuClock;
         private GPUMode gpuMode;
@@ -31,10 +30,11 @@ namespace GameboyEmulator
         private readonly List<Tile> tileSet;
         private readonly byte[] tileBackgroundMap1;
         private readonly byte[] tileBackgroundMap2;
+        private readonly byte[] oamData;
+        private readonly byte[] zRamData;
 
-        public GPU( CPURegisters registers, Clock cpuClock )
+        public GPU( Clock cpuClock )
         {
-            this.registers = registers;
             this.cpuClock = cpuClock;
 
             clock = new Clock();
@@ -53,6 +53,8 @@ namespace GameboyEmulator
 
             tileBackgroundMap1 = new byte[32 * 32];
             tileBackgroundMap2 = new byte[32 * 32];
+            oamData = new byte[0xA0];
+            zRamData = new byte[0x7F];
         }
 
         public void FrameStep()
@@ -158,6 +160,26 @@ namespace GameboyEmulator
             }
 
             memoryData[ offset ] = value;
+        }
+
+        public byte ReadFromOAM( int offset )
+        {
+            return oamData[ offset ];
+        }
+
+        public void WriteToOAM(int offset, byte value)
+        {
+            oamData[ offset ] = value;
+        }
+
+        public byte ReadFromZeroPageRAM( int offset )
+        {
+            return zRamData[ offset ];
+        }
+
+        public void WriteToZeroPageRAM( int offset, byte value )
+        {
+            zRamData[ offset ] = value;
         }
     }
 }

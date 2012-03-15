@@ -11,8 +11,9 @@ namespace GameboyEmulator
         private Memory memory;
         private Processor processor;
         private GPU gpu;
-        private CPURegisters registers;
+        private CPURegisters cpuRegisters;
         private Clock clock;
+        private GPURegisters gpuRegisters;
 
         public void Load( byte[] rom )
         {
@@ -20,17 +21,17 @@ namespace GameboyEmulator
             
             clock = new Clock();
             
-            registers = new CPURegisters( cartridge );
-            gpu = new GPU( registers, clock );
+            cpuRegisters = new CPURegisters( cartridge );
+            gpuRegisters = new GPURegisters();
 
-            memory = new Memory( cartridge, gpu);
+            gpu = new GPU( clock );
 
-            processor = new Processor( memory, registers, gpu, clock );
+            memory = new Memory( cartridge, gpu, cpuRegisters, gpuRegisters );
+
+            processor = new Processor( memory, cpuRegisters, gpu, clock );
 
             memory.Initialize();
             processor.Initialize();
-
-            EmulateFrame();
         }
 
         public void EmulateFrame()

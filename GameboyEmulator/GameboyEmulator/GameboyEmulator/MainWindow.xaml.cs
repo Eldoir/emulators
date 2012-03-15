@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace GameboyEmulator
 {
@@ -20,6 +21,8 @@ namespace GameboyEmulator
     public partial class MainWindow : Window
     {
         private Emulator emulator = new Emulator();
+        DispatcherTimer dispatcher = new DispatcherTimer();
+
 
         public MainWindow()
         {
@@ -61,10 +64,21 @@ namespace GameboyEmulator
                         emulator.Load(rom);
 
                         Title = emulator.GameName;
+
+                        dispatcher.Stop();
+
+                        dispatcher.Interval = TimeSpan.FromSeconds(1 / 2);
+                        dispatcher.Tick += new EventHandler(CPUCycle);
+                        dispatcher.Start();
+
                     }
                 }
             }
         }
 
+        private void CPUCycle( object sender, EventArgs e )
+        {
+            emulator.EmulateFrame();
+        }
     }
 }
