@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 
 namespace GameboyEmulator
 {
@@ -14,6 +15,7 @@ namespace GameboyEmulator
         private CPURegisters cpuRegisters;
         private Clock clock;
         private GPURegisters gpuRegisters;
+        private Keyboard keyboard;
 
         public void Load( byte[] rom )
         {
@@ -24,9 +26,11 @@ namespace GameboyEmulator
             cpuRegisters = new CPURegisters( cartridge );
             gpuRegisters = new GPURegisters();
 
-            gpu = new GPU( clock );
+            gpu = new GPU( clock, gpuRegisters );
 
-            memory = new Memory( cartridge, gpu, cpuRegisters, gpuRegisters );
+            keyboard = new Keyboard();
+
+            memory = new Memory( cartridge, gpu, cpuRegisters, gpuRegisters, keyboard );
 
             processor = new Processor( memory, cpuRegisters, gpu, clock );
 
@@ -37,6 +41,16 @@ namespace GameboyEmulator
         public void EmulateFrame()
         {
             processor.EmulateFrame();
+        }
+
+        public void KeyUp( Key key)
+        {
+            keyboard.KeyUp(key);
+        }
+
+        public void KeyDown(Key key)
+        {
+            keyboard.KeyDown(key);
         }
 
         public string GameName { get { return cartridge.GameName; } }

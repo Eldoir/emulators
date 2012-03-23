@@ -1,7 +1,7 @@
 ﻿<Window x:Class="GameboyEmulator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" KeyUp="Window_KeyUp" KeyDown="Window_KeyDown">
     <Grid>
         <Menu Height="23" Name="menu1" VerticalAlignment="Top">
             <MenuItem Header="Fichier">

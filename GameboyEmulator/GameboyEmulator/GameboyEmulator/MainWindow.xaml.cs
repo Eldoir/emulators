@@ -80,5 +80,15 @@ namespace GameboyEmulator
         {
             emulator.EmulateFrame();
         }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            emulator.KeyUp(e.Key);
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            emulator.KeyDown(e.Key);
+        }
     }
 }

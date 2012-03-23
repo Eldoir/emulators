@@ -144,5 +144,10 @@ namespace GameboyEmulator
                 }
             }
         }
+
+        public byte[] GetPalette( byte offset )
+        {
+            return backgroundPalette[offset];
+        }
     }
 }

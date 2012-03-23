@@ -7,7 +7,7 @@ namespace GameboyEmulator
 {
     class Tile
     {
-        private readonly byte[] data = new byte[16];
+        private readonly byte[] data = new byte[2];
 
         public byte this[ int offset ]
         {

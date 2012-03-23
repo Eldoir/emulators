@@ -6,6 +6,7 @@
         private readonly GPU gpu;
         private readonly CPURegisters cpuRegisters;
         private readonly GPURegisters gpuRegisters;
+        private readonly Keyboard keyboard;
 
         //private readonly byte[] videoRAMData = new byte[0x2000];
         private readonly byte[] cartridgeExternalRAMData = new byte[0x2000];
@@ -19,12 +20,13 @@
         private byte interruptEnableRegister;
         private bool inBIOS = true;
 
-        public Memory( Cartridge cartridge, GPU gpu, CPURegisters cpuRegisters, GPURegisters gpuRegisters )
+        public Memory(Cartridge cartridge, GPU gpu, CPURegisters cpuRegisters, GPURegisters gpuRegisters, Keyboard keyboard)
         {
             this.cartridge = cartridge;
             this.gpu = gpu;
             this.cpuRegisters = cpuRegisters;
             this.gpuRegisters = gpuRegisters;
+            this.keyboard = keyboard;
         }
 
         public void Initialize()
@@ -163,17 +165,17 @@
                                 {
                                     return gpu.ReadFromZeroPageRAM(offset - 0xFF80);
                                 }
-                                
-                                // I/O control handling
-
-                                switch ( offset & 0x00F0 )
+                                else if (offset >= 0xFF40)
                                 {
-                                    // GPU (64 registers)
-                                    case 0x40:
-                                    case 0x50:
-                                    case 0x60:
-                                    case 0x70:
-                                        return gpuRegisters.Read( offset );
+                                    return gpuRegisters.Read(offset);
+                                }
+                                else if (offset == 0xFF00)
+                                {
+                                    keyboard.Read();
+                                }
+                                else
+                                {
+                                    return 0;
                                 }
                                 break;
                         }
@@ -275,20 +277,13 @@
                                 {
                                     gpu.WriteToZeroPageRAM(offset - 0xFF80, value);
                                 }
-                                else
+                                else if ( offset >= 0xFF40 )
                                 {
-                                    // I/O control handling
-
-                                    switch ( offset & 0x00F0 )
-                                    {
-                                        // GPU (64 registers)
-                                        case 0x40:
-                                        case 0x50:
-                                        case 0x60:
-                                        case 0x70:
-                                            gpuRegisters.Write( offset, value );
-                                            break;
-                                    }
+                                    gpuRegisters.Write(offset, value);
+                                }
+                                else if (offset == 0xFF00)
+                                {
+                                    keyboard.Write(value);
                                 }
                                 break;
                             }
