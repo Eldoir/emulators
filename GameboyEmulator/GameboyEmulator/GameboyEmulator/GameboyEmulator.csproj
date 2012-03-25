@@ -57,6 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CPUInstructions.cs" />
     <Compile Include="GPURegisters.cs" />
     <Compile Include="Keyboard.cs" />
     <Compile Include="Tile.cs" />

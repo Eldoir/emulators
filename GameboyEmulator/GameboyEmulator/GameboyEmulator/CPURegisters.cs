@@ -38,15 +38,15 @@ namespace GameboyEmulator
             PC = 0x100;
             SP = 0xFFFE;
         }
-        
-        public byte A { get; set; }
-        public byte F { get; set; }
-        public byte B { get; set; }
-        public byte C { get; set; }
-        public byte D { get; set; }
-        public byte E { get; set; }
-        public byte H { get; set; }
-        public byte L { get; set; }
+
+        public byte A;
+        public byte F;
+        public byte B;
+        public byte C;
+        public byte D;
+        public byte E;
+        public byte H;
+        public byte L;
 
         public ushort AF
         {

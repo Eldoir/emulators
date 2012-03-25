@@ -9,6 +9,7 @@ namespace GameboyEmulator
         private readonly GPU gpu;
         private readonly Clock clock;
         private readonly CPURegisters registers;
+        private readonly CPUInstructions cpuInstructions;
 
         public Processor( Memory memory, CPURegisters cpuRegisters, GPU gpu, Clock clock)
         {
@@ -16,6 +17,8 @@ namespace GameboyEmulator
             this.registers = cpuRegisters;
             this.gpu = gpu;
             this.clock = clock;
+
+            cpuInstructions = new CPUInstructions( cpuRegisters );
         }
         
         public void Initialize()
@@ -52,13 +55,7 @@ namespace GameboyEmulator
                         break;
                     case 0x04: // INC B
                         {
-                            var newValue = (byte)(registers.B + 1);
-
-                            registers.B = newValue;
-
-                            registers.ZFlag = newValue == 0;
-                            registers.NFlag = false;
-                            registers.HFlag = HasHalfCarry(registers.B, 1);
+                            cpuInstructions.INC_n(ref registers.B);
 
                             cycleCount = 4;
                         }
@@ -119,13 +116,7 @@ namespace GameboyEmulator
                         break;
                     case 0x0C: // INC C
                         {
-                            var newValue = (byte)(registers.C + 1);
-
-                            registers.C = newValue;
-
-                            registers.ZFlag = newValue == 0;
-                            registers.NFlag = false;
-                            registers.HFlag = HasHalfCarry(registers.C, 1);
+                            cpuInstructions.INC_n( ref registers.C );
 
                             cycleCount = 4;
                         }
@@ -187,13 +178,7 @@ namespace GameboyEmulator
                         break;
                     case 0x14: // INC D
                         {
-                            var newValue = (byte)(registers.D + 1);
-
-                            registers.D = newValue;
-
-                            registers.ZFlag = newValue == 0;
-                            registers.NFlag = false;
-                            registers.HFlag = HasHalfCarry(registers.D, 1);
+                            cpuInstructions.INC_n( ref registers.D );
 
                             cycleCount = 4;
                         }
@@ -257,13 +242,7 @@ namespace GameboyEmulator
                         break;
                     case 0x1C: // INC E
                         {
-                            var newValue = (byte)(registers.E + 1);
-
-                            registers.E = newValue;
-
-                            registers.ZFlag = newValue == 0;
-                            registers.NFlag = false;
-                            registers.HFlag = HasHalfCarry(registers.E, 1);
+                            cpuInstructions.INC_n( ref registers.E );
 
                             cycleCount = 4;
                         }
@@ -327,13 +306,7 @@ namespace GameboyEmulator
                         break;
                     case 0x24: // INC H
                         {
-                            var newValue = (byte)(registers.H + 1);
-
-                            registers.H = newValue;
-
-                            registers.ZFlag = newValue == 0;
-                            registers.NFlag = false;
-                            registers.HFlag = HasHalfCarry(registers.H, 1);
+                            cpuInstructions.INC_n(ref registers.H);
 
                             cycleCount = 4;
                         }
@@ -458,13 +431,7 @@ namespace GameboyEmulator
                         break;
                     case 0x2C: // INC L
                         {
-                            var newValue = (byte)(registers.L + 1);
-
-                            registers.L = newValue;
-
-                            registers.ZFlag = newValue == 0;
-                            registers.NFlag = false;
-                            registers.HFlag = HasHalfCarry(registers.L, 1);
+                            cpuInstructions.INC_n(ref registers.L);
 
                             cycleCount = 4;
                         }
@@ -522,14 +489,11 @@ namespace GameboyEmulator
                         break;
                     case 0x34: // INC (HL)
                         {
-                            var regValue = memory[registers.HL];
-                            var newValue = (byte)(regValue + 1);
+                            var temp = memory[ registers.HL ];
+                            
+                            cpuInstructions.INC_n( ref temp );
 
-                            memory[registers.HL] = newValue;
-
-                            registers.ZFlag = newValue == 0;
-                            registers.NFlag = false;
-                            registers.HFlag = HasHalfCarry(regValue, 1);
+                            memory[registers.HL] = temp;
 
                             cycleCount = 4;
                         }
@@ -596,13 +560,8 @@ namespace GameboyEmulator
                         break;
                     case 0x3C: // INC A
                         {
-                            var newValue = (byte)(registers.A + 1);
+                            cpuInstructions.INC_n(ref registers.A);
 
-                            registers.ZFlag = newValue == 0;
-                            registers.NFlag = false;
-                            registers.HFlag = HasHalfCarry(registers.A, 1);
-
-                            registers.A = newValue;
                             cycleCount = 4;
                         }
                         break;

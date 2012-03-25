@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Drawing;
@@ -73,7 +74,7 @@ namespace GameboyEmulator
                                 gpuMode = GPUMode.VBlankPeriod;
                                 //TODO draw image
 
-                                bmp.Save( "C\\test.bmp" );
+                                bmp.Save( "D:\\test.bmp" );
                             }
                             else
                             {
@@ -187,36 +188,38 @@ namespace GameboyEmulator
                 tile += 256;
             }
 
-            var bmpData = bmp.LockBits( new Rectangle( 0, 0, bmp.Width, bmp.Height ), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb );
+            var bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-            var bitmapLineOffset = ( byte* ) bmpData.Scan0 + ( gpuRegisters.CurrentScanLine * 160 * 4 );
+            var bitmapLineOffset = (byte*)bmpData.Scan0 + (gpuRegisters.CurrentScanLine * 160 * 4);
 
             for (var i = 0; i < 160; i++)
             {
-                byte[] palette = gpuRegisters.GetPalette( tileBackgroundMap[ tile + y + x ] );
+                byte[] palette = gpuRegisters.GetPalette(tileBackgroundMap[tile + y + x]);
 
-                bitmapLineOffset[ x ] = palette[ 3 ];
-                bitmapLineOffset[ x + 1 ] = palette[ 2 ];
-                bitmapLineOffset[ x + 2 ] = palette[ 1 ];
-                bitmapLineOffset[ x + 3 ] = palette[ 0 ];
+                *bitmapLineOffset = palette[3];
+                *(bitmapLineOffset + 1) = palette[2];
+                *(bitmapLineOffset + 2) = palette[1];
+                *(bitmapLineOffset + 3) = palette[0];
+
+                bitmapLineOffset += 4;
 
                 x++;
 
-                if ( x == 8 )
+                if (x == 8)
                 {
                     x = 0;
-                    lineOffset = ( lineOffset + 1 ) & 31;
+                    lineOffset = (lineOffset + 1) & 31;
 
-                    tile = ( int ) tileSet[ tileMapOffset + lineOffset - 0x1800 ];
+                    tile = (int)tileSet[tileMapOffset + lineOffset - 0x1800];
 
-                    if ( gpuRegisters.BackgroundTileSet == 1 && tile < 128 )
+                    if (gpuRegisters.BackgroundTileSet == 1 && tile < 128)
                     {
                         tile += 256;
                     }
                 }
             }
 
-            bmp.UnlockBits( bmpData );
+            bmp.UnlockBits(bmpData);
         }
     }
 }
