@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 
 namespace GameboyEmulator
 {
@@ -35,6 +37,11 @@ namespace GameboyEmulator
                 var setInterruptsAfterInstruction = mustDisableInterrupts || mustEnableInterrupts;
                 
                 var opcode = GetByteAtProgramCounter();
+
+                string outputString = "Opcode : {0:X} - Before : {1} - After : {2}";
+                string registersString = "A : {0:X} | F : {1:X} | B : {2:X} | C : {3:X} | D : {4:X} | E : {5:X} | H : {6:X} | L : {7:X} | PC : {8} | SP : {9}";
+
+                string before = string.Format( CultureInfo.InvariantCulture, registersString, registers.A, registers.F, registers.B, registers.C, registers.D, registers.E, registers.H, registers.L, registers.PC, registers.SP );
 
                 switch (opcode)
                 {
@@ -4398,11 +4405,21 @@ namespace GameboyEmulator
                         break;
                 }
 
-                Debug.Assert( cycleCount > 0 );
+                string after = string.Format(CultureInfo.InstalledUICulture, registersString, registers.A, registers.F, registers.B, registers.C, registers.D, registers.E, registers.H, registers.L, registers.PC, registers.SP); 
+                
+                Debug.Assert(cycleCount > 0);
 
                 clock.IncrementCycleCount( cycleCount );
                 
                 gpu.FrameStep();
+
+                using ( var fs = new FileStream( "D:\\log.txt", FileMode.Append, FileAccess.Write ))
+                {
+                    using (var sw = new StreamWriter(fs))
+                    {
+                        sw.WriteLine( string.Format( CultureInfo.InvariantCulture, outputString, opcode, before, after ) );
+                    }
+                }
 
                 if (setInterruptsAfterInstruction)
                 {
