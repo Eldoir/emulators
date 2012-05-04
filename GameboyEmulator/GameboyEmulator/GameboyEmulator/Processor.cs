@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text;
 
 namespace GameboyEmulator
 {
@@ -13,6 +14,9 @@ namespace GameboyEmulator
         private readonly CPURegisters registers;
         private readonly CPUInstructions cpuInstructions;
 
+        private int frameCount;
+        private StringBuilder sb = new StringBuilder();
+
         public Processor( Memory memory, CPURegisters cpuRegisters, GPU gpu, Clock clock)
         {
             this.memory = memory;
@@ -20,7 +24,7 @@ namespace GameboyEmulator
             this.gpu = gpu;
             this.clock = clock;
 
-            cpuInstructions = new CPUInstructions( cpuRegisters );
+            cpuInstructions = new CPUInstructions( cpuRegisters, memory );
         }
         
         public void Initialize()
@@ -32,14 +36,15 @@ namespace GameboyEmulator
 
         public void EmulateFrame()
         {
+            clock.Reset();
+
             do
             {
                 var setInterruptsAfterInstruction = mustDisableInterrupts || mustEnableInterrupts;
                 
                 var opcode = GetByteAtProgramCounter();
 
-                string outputString = "Opcode : {0:X} - Before : {1} - After : {2}";
-                string registersString = "A : {0:X} | F : {1:X} | B : {2:X} | C : {3:X} | D : {4:X} | E : {5:X} | H : {6:X} | L : {7:X} | PC : {8} | SP : {9}";
+                string registersString = "A: {0:X} | F: {1:X} | B: {2:X} | C: {3:X} | D: {4:X} | E: {5:X} | H: {6:X} | L: {7:X} | PC: {8} | SP: {9}";
 
                 string before = string.Format( CultureInfo.InvariantCulture, registersString, registers.A, registers.F, registers.B, registers.C, registers.D, registers.E, registers.H, registers.L, registers.PC, registers.SP );
 
@@ -287,14 +292,7 @@ namespace GameboyEmulator
                         break;
                     case 0x20: // JR NZ, n
                         {
-                            var value = GetByteAtProgramCounter(); 
-                            
-                            if (!registers.ZFlag)
-                            {
-                                registers.PC += value;
-                            }
-
-                            registers.PC += 2;
+                            cpuInstructions.JR_CC_n( !registers.ZFlag );
 
                             cycleCount = 8;
                         }
@@ -304,7 +302,8 @@ namespace GameboyEmulator
                         cycleCount = 12;
                         break;
                     case 0x22: // LD (HLI),A / LD (HL+),A / LDI (HL),A
-                        memory[registers.HL++] = registers.A;
+                        memory[registers.HL] = registers.A;
+                        registers.HL++;
                         cycleCount = 8;
                         break;
                     case 0x23: // INC HL
@@ -405,14 +404,7 @@ namespace GameboyEmulator
                         break;
                     case 0x28: // JR Z, n
                         {
-                            var value = GetByteAtProgramCounter();
-
-                            if (registers.ZFlag)
-                            {
-                                registers.PC += value;
-                            }
-
-                            registers.PC += 2;
+                            cpuInstructions.JR_CC_n(registers.ZFlag); 
 
                             cycleCount = 8;
                         }
@@ -472,14 +464,9 @@ namespace GameboyEmulator
                         break;
                     case 0x30: // JR NC, n
                         {
-                            var value = GetByteAtProgramCounter();
+                            cpuInstructions.JR_CC_n(!registers.CFlag);
 
-                            if (!registers.CFlag)
-                            {
-                                registers.PC += value;
-                            }
-
-                            registers.PC += 2;
+                            cycleCount = 8;
                         }
                         break;
                     case 0x31: // LD SP,nn
@@ -536,14 +523,9 @@ namespace GameboyEmulator
                         break;
                     case 0x38: // JR C, n
                         {
-                            var value = GetByteAtProgramCounter();
+                            cpuInstructions.JR_CC_n(registers.CFlag);
 
-                            if (registers.CFlag)
-                            {
-                                registers.PC += value;
-                            }
-
-                            registers.PC += 2;
+                            cycleCount = 8;
                         }
                         break;
                     case 0x39: // ADD HL,SP
@@ -1314,82 +1296,42 @@ namespace GameboyEmulator
                         }
                         break;
                     case 0xA0: // AND A,B
-                        registers.A = (byte)(registers.B & registers.A);
-
-                        registers.ZFlag = registers.A == 0;
-                        registers.NFlag = false;
-                        registers.HFlag = true;
-                        registers.CFlag = false;
+                        cpuInstructions.AND_n( registers.B );
 
                         cycleCount = 4;
                         break;
                     case 0xA1: // AND A,C
-                        registers.A = (byte)(registers.C & registers.A);
-
-                        registers.ZFlag = registers.A == 0;
-                        registers.NFlag = false;
-                        registers.HFlag = true;
-                        registers.CFlag = false;
+                        cpuInstructions.AND_n(registers.C);
 
                         cycleCount = 4;
                         break;
                     case 0xA2: // AND A,D
-                        registers.A = (byte)(registers.D & registers.A);
-
-                        registers.ZFlag = registers.A == 0;
-                        registers.NFlag = false;
-                        registers.HFlag = true;
-                        registers.CFlag = false;
+                        cpuInstructions.AND_n(registers.D);
 
                         cycleCount = 4;
                         break;
                     case 0xA3: // AND A,E
-                        registers.A = (byte)(registers.E & registers.A);
-
-                        registers.ZFlag = registers.A == 0;
-                        registers.NFlag = false;
-                        registers.HFlag = true;
-                        registers.CFlag = false;
+                        cpuInstructions.AND_n(registers.E);
 
                         cycleCount = 4;
                         break;
                     case 0xA4: // AND A,H
-                        registers.A = (byte)(registers.H & registers.A);
-
-                        registers.ZFlag = registers.A == 0;
-                        registers.NFlag = false;
-                        registers.HFlag = true;
-                        registers.CFlag = false;
+                        cpuInstructions.AND_n(registers.H);
 
                         cycleCount = 4;
                         break;
                     case 0xA5: // AND A,L
-                        registers.A = (byte)(registers.L & registers.A);
-
-                        registers.ZFlag = registers.A == 0;
-                        registers.NFlag = false;
-                        registers.HFlag = true;
-                        registers.CFlag = false;
+                        cpuInstructions.AND_n(registers.L);
 
                         cycleCount = 4;
                         break;
                     case 0xA6: // AND A,(HL)
-                        registers.A = (byte)(memory[registers.HL] & registers.A);
-
-                        registers.ZFlag = registers.A == 0;
-                        registers.NFlag = false;
-                        registers.HFlag = true;
-                        registers.CFlag = false;
+                        cpuInstructions.AND_n(memory[registers.HL]);
 
                         cycleCount = 8;
                         break;
                     case 0xA7: // AND A,A
-                        registers.A = (byte)(registers.A & registers.A);
-
-                        registers.ZFlag = registers.A == 0;
-                        registers.NFlag = false;
-                        registers.HFlag = true;
-                        registers.CFlag = false;
+                        cpuInstructions.AND_n(registers.A);
 
                         cycleCount = 4;
                         break;
@@ -1654,10 +1596,7 @@ namespace GameboyEmulator
                         break;
                     case 0xC2: // JP NZ, nn
                         {
-                            if (!registers.ZFlag)
-                            {
-                                registers.PC = GetUShortAtProgramCounter();
-                            }
+                            cpuInstructions.JP_CC_nn( !registers.ZFlag );
 
                             cycleCount = 12;
                         }
@@ -1725,10 +1664,7 @@ namespace GameboyEmulator
                         break;
                     case 0xCA: // JP Z, nn
                         {
-                            if (registers.ZFlag)
-                            {
-                                registers.PC = GetUShortAtProgramCounter();
-                            }
+                            cpuInstructions.JP_CC_nn(registers.ZFlag);
 
                             cycleCount = 12;
                         }
@@ -4160,10 +4096,7 @@ namespace GameboyEmulator
                         break;
                     case 0xD2: // JP NC, nn
                         {
-                            if (!registers.CFlag)
-                            {
-                                registers.PC = GetUShortAtProgramCounter();
-                            }
+                            cpuInstructions.JP_CC_nn(!registers.NFlag);
 
                             cycleCount = 12;
                         }
@@ -4223,10 +4156,7 @@ namespace GameboyEmulator
                         break;
                     case 0xDA: // JP C, nn
                         {
-                            if (!registers.CFlag)
-                            {
-                                registers.PC = GetUShortAtProgramCounter();
-                            }
+                            cpuInstructions.JP_CC_nn(registers.CFlag);
 
                             cycleCount = 12;
                         }
@@ -4266,13 +4196,7 @@ namespace GameboyEmulator
                         cycleCount = 16;
                         break;
                     case 0xE6: // AND A,#
-                        registers.A = (byte)(GetByteAtProgramCounter() & registers.A);
-
-                        registers.ZFlag = registers.A == 0;
-                        registers.NFlag = false;
-                        registers.HFlag = true;
-                        registers.CFlag = false;
-
+                        cpuInstructions.AND_n( GetByteAtProgramCounter() );
                         cycleCount = 8;
                         break;
                     case 0xE7: // RST 20H
@@ -4413,14 +4337,12 @@ namespace GameboyEmulator
                 
                 gpu.FrameStep();
 
-                using ( var fs = new FileStream( "D:\\log.txt", FileMode.Append, FileAccess.Write ))
-                {
-                    using (var sw = new StreamWriter(fs))
-                    {
-                        sw.WriteLine( string.Format( CultureInfo.InvariantCulture, outputString, opcode, before, after ) );
-                    }
-                }
-
+                sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "OpCode : {0:X}", opcode));
+                sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "CycleCount : {0}", cycleCount));
+                sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "TotalCycleCount : {0}", clock.CycleCount));
+                sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "B : {0:X}", before));
+                sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "A : {0:X}", after));
+                
                 if (setInterruptsAfterInstruction)
                 {
                     if (mustDisableInterrupts)
@@ -4435,6 +4357,19 @@ namespace GameboyEmulator
                     mustEnableInterrupts = mustDisableInterrupts = false;
                 }
             } while ( !clock.IsFrameCompleted );
+
+            frameCount++;
+
+            if (frameCount == 5)
+            {
+                using (var fs = new FileStream("D:\\log.txt", FileMode.Create, FileAccess.Write))
+                {
+                    using (var sw = new StreamWriter(fs))
+                    {
+                        sw.Write(sb.ToString());
+                    }
+                }
+            }
         }
 
         private void EI()

@@ -16,7 +16,7 @@ namespace GameboyEmulator
         public byte ScrollY { get; private set; }
         public byte WindowX { get; private set; }
         public byte WindowY { get; private set; }
-        public byte CurrentScanLine { get; private set; }
+        public byte CurrentScanLine { get; set; }
         public byte ScanLineCompare { get; private set; }
         public bool UseBackgrounds { get; private set; }
         public bool UseLCD { get; private set; }

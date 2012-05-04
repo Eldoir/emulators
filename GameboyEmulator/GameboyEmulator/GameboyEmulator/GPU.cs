@@ -29,8 +29,6 @@ namespace GameboyEmulator
         private readonly GPURegisters gpuRegisters;
         private GPUMode gpuMode;
 
-        private int lineIndex;
-
         private readonly byte[] memoryData;
         private readonly byte[] tileSet;
         private readonly byte[] tileBackgroundMap;
@@ -47,13 +45,14 @@ namespace GameboyEmulator
             clock = new Clock();
 
             gpuMode = GPUMode.HBlankPeriod;
-            lineIndex = 0;
 
             memoryData = new byte[0x2000];
             tileSet = new byte[0x17FF];
             tileBackgroundMap = new byte[0x7FF];
             oamData = new byte[0xA0];
             zRamData = new byte[0x7F];
+
+            bmp.Save("D:\\test.bmp");
         }
 
         public void FrameStep()
@@ -67,9 +66,9 @@ namespace GameboyEmulator
                         if (clock.CycleCount >= hBlankCycleDuration)
                         {
                             clock.Reset();
-                            lineIndex++;
+                            gpuRegisters.CurrentScanLine++;
 
-                            if (lineIndex == lcdLinesCount)
+                            if (gpuRegisters.CurrentScanLine == lcdLinesCount)
                             {
                                 gpuMode = GPUMode.VBlankPeriod;
                                 //TODO draw image
@@ -88,12 +87,12 @@ namespace GameboyEmulator
                         if (clock.CycleCount >= vBlankCycleDuration)
                         {
                             clock.Reset();
-                            lineIndex++;
+                            gpuRegisters.CurrentScanLine++;
 
-                            if (lineIndex > 153)
+                            if (gpuRegisters.CurrentScanLine > 153)
                             {
                                 gpuMode = GPUMode.OAMReadMode;
-                                lineIndex = 0;
+                                gpuRegisters.CurrentScanLine = 0;
                             }
                         }
                     }
@@ -178,48 +177,46 @@ namespace GameboyEmulator
 
             var lineOffset = gpuRegisters.ScrollX >> 3;
 
-            var y = (gpuRegisters.CurrentScanLine + gpuRegisters.ScrollY) & 7;
-            var x = gpuRegisters.ScrollX & 7;
+            var tile_line_offset = (gpuRegisters.CurrentScanLine + gpuRegisters.ScrollY) & 7;
+            var tile_column_offset = gpuRegisters.ScrollX & 7;
 
-            var tile = (int)tileSet[ tileMapOffset + lineOffset - 0x1800];
-
+            var tile = (int)tileSet[ tileMapOffset + lineOffset - 0x1800 ];
+            
             if (gpuRegisters.BackgroundTileSet == 1 && tile < 128)
             {
                 tile += 256;
             }
 
-            var bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+            //var bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-            var bitmapLineOffset = (byte*)bmpData.Scan0 + (gpuRegisters.CurrentScanLine * 160 * 4);
+            //var bitmapLineOffset = (byte*)bmpData.Scan0 + (gpuRegisters.CurrentScanLine * 160 * 4);
 
-            for (var i = 0; i < 160; i++)
-            {
-                byte[] palette = gpuRegisters.GetPalette(tileBackgroundMap[tile + y + x]);
+            //for (var i = 0; i < 160; i++)
+            //{
+            //    *bitmapLineOffset = 0x0; // B
+            //    *( bitmapLineOffset + 1 ) = 0xFF; // G
+            //    *(bitmapLineOffset + 2) = 0x0; // R
+            //    *(bitmapLineOffset + 3) = 0xFF; //A
 
-                *bitmapLineOffset = palette[3];
-                *(bitmapLineOffset + 1) = palette[2];
-                *(bitmapLineOffset + 2) = palette[1];
-                *(bitmapLineOffset + 3) = palette[0];
+            //    bitmapLineOffset += 4;
 
-                bitmapLineOffset += 4;
+            //    x++;
 
-                x++;
+            //    if (x == 8)
+            //    {
+            //        x = 0;
+            //        lineOffset = (lineOffset + 1) & 31;
 
-                if (x == 8)
-                {
-                    x = 0;
-                    lineOffset = (lineOffset + 1) & 31;
+            //        tile = (int)tileSet[tileMapOffset + lineOffset - 0x1800];
 
-                    tile = (int)tileSet[tileMapOffset + lineOffset - 0x1800];
+            //        if (gpuRegisters.BackgroundTileSet == 1 && tile < 128)
+            //        {
+            //            tile += 256;
+            //        }
+            //    }
+            //}
 
-                    if (gpuRegisters.BackgroundTileSet == 1 && tile < 128)
-                    {
-                        tile += 256;
-                    }
-                }
-            }
-
-            bmp.UnlockBits(bmpData);
+            //bmp.UnlockBits(bmpData);
         }
     }
 }

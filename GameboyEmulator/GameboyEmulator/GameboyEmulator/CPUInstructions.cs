@@ -8,10 +8,12 @@ namespace GameboyEmulator
     public class CPUInstructions
     {
         private readonly CPURegisters cpuRegisters;
+        private readonly Memory memory;
 
-        public CPUInstructions( CPURegisters cpuRegisters )
+        public CPUInstructions( CPURegisters cpuRegisters, Memory memory )
         {
             this.cpuRegisters = cpuRegisters;
+            this.memory = memory;
         }
 
         public void INC_n( ref byte value )
@@ -23,6 +25,49 @@ namespace GameboyEmulator
             cpuRegisters.ZFlag = newValue == 0;
             cpuRegisters.NFlag = false;
             cpuRegisters.HFlag = HasHalfCarry(value, 1);
+        }
+
+        public void JR_CC_n( bool condition )
+        {
+            var value = (ushort)(sbyte)GetByteAtProgramCounter();
+
+            if (condition)
+            {
+                cpuRegisters.PC += value;
+            }
+        }
+
+        public void JP_CC_nn( bool condition )
+        {
+            var value = GetUShortAtProgramCounter();
+
+            if (condition)
+            {
+                cpuRegisters.PC = value;
+            }
+        }
+
+        public void AND_n( byte value )
+        {
+            cpuRegisters.A = (byte)(value & cpuRegisters.A);
+
+            cpuRegisters.ZFlag = cpuRegisters.A == 0;
+            cpuRegisters.NFlag = false;
+            cpuRegisters.HFlag = true;
+            cpuRegisters.CFlag = false;
+        }
+
+        private byte GetByteAtProgramCounter()
+        {
+            return memory[cpuRegisters.PC++];
+        }
+
+        private ushort GetUShortAtProgramCounter()
+        {
+            var lowOrder = memory[cpuRegisters.PC++];
+            var highOrder = memory[cpuRegisters.PC++];
+
+            return (ushort)((highOrder << 8) | lowOrder);
         }
 
         private bool HasCarry(ushort first, ushort second)

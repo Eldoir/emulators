@@ -167,9 +167,9 @@ namespace GameboyEmulator
         private const byte cFlag = 0x10;
 
         // The following bytes are used to negate the bits sets by the above flags, on the F register
-        private const byte notZFlag = 0x80;
-        private const byte notNFlag = 0x40;
-        private const byte notHFlag = 0x20;
-        private const byte notCFlag = 0x10;
+        private const byte notZFlag = 0x70;
+        private const byte notNFlag = 0xB0;
+        private const byte notHFlag = 0xD0;
+        private const byte notCFlag = 0xE0;
     }
 }
